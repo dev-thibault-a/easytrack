@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title></title>
+    <title>EasyTrack</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,18 +14,17 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         input[type="number"] { -moz-appearance: textfield; }
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        /* Astuce pour masquer la barre de défilement tout en gardant le scroll */
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950">
 
     <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-4xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
-        <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">EasyTrack</h1>
+        <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">⚡ EasyTrack</h1>
         <div id="sync-status" class="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-sm transition-colors">Connexion...</div>
     </header>
 
-    <nav class="fixed bottom-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800 pb-safe z-40 md:top-0 md:bottom-auto md:w-auto md:left-1/2 md:-translate-x-1/2 md:border-t-0 md:border-b md:rounded-b-2xl md:px-6">
+    <nav class="fixed bottom-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800 pb-safe z-40 md:top-24 md:bottom-auto md:w-auto md:left-1/2 md:-translate-x-1/2 md:border md:border-zinc-800 md:rounded-2xl md:px-6">
         <div class="flex justify-around p-3 md:pb-3 md:gap-8">
             <button onclick="switchTab('workouts')" class="flex flex-col items-center gap-1 text-white transition-opacity duration-200 hover:scale-105" id="nav-workouts">
                 <span class="text-xl md:text-2xl">🏋️‍♂️</span><span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Séances</span>
@@ -45,7 +44,6 @@
             <div id="workout-list" class="space-y-6">
                 <h2 class="text-2xl font-semibold text-zinc-300 mb-2">Programme de Base</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="base-workouts-container"></div>
-                
                 <h2 class="text-2xl font-semibold text-zinc-300 mt-8 mb-2">Séances Bonus</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="bonus-workouts-container"></div>
             </div>
@@ -66,8 +64,7 @@
             <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Progression de Force</h2>
             <div class="mb-6 max-w-md">
                 <label class="block text-sm font-medium text-zinc-400 mb-2">Sélectionne un exercice :</label>
-                <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-900 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-4 outline-none transition-all cursor-pointer">
-                    </select>
+                <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-900 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-4 outline-none transition-all cursor-pointer"></select>
             </div>
             <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
                 <canvas id="statsChart"></canvas>
@@ -77,30 +74,50 @@
         <section id="tab-visbody" class="tab-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Nouvelle Pesée</h2>
+                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Bilan Visbody Pro</h2>
                     <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl space-y-6 backdrop-blur-sm">
-                        <div class="space-y-4">
+                        
+                        <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-sm font-medium text-zinc-400 mb-2 block">Poids total (kg)</label>
-                                <input type="number" id="vb-weight" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
+                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Poids total (kg)</label>
+                                <input type="number" id="vb-weight" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
                             </div>
-                            <div class="flex gap-4">
-                                <div class="w-1/2">
-                                    <label class="text-sm font-medium text-zinc-400 mb-2 block">Gras (%)</label>
-                                    <input type="number" id="vb-fat" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
-                                </div>
-                                <div class="w-1/2">
-                                    <label class="text-sm font-medium text-zinc-400 mb-2 block">Muscle (kg)</label>
-                                    <input type="number" id="vb-muscle" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
-                                </div>
+                            <div>
+                                <label class="text-xs font-medium text-purple-400 mb-1 block">Score Santé (0-100)</label>
+                                <input type="number" id="vb-score" class="w-full bg-zinc-950 p-3 rounded-xl border border-purple-900/50 text-center outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Masse Grasse (%)</label>
+                                <input type="number" id="vb-fat" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-orange-400 mb-1 block">Muscle (kg)</label>
+                                <input type="number" id="vb-muscle" class="w-full bg-zinc-950 p-3 rounded-xl border border-orange-900/50 text-center outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-blue-400 mb-1 block">Eau corporelle (kg)</label>
+                                <input type="number" id="vb-water" class="w-full bg-zinc-950 p-3 rounded-xl border border-blue-900/50 text-center outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Os / Minéraux (kg)</label>
+                                <input type="number" id="vb-bone" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-red-400 mb-1 block">Graisse Viscérale</label>
+                                <input type="number" id="vb-visceral" class="w-full bg-zinc-950 p-3 rounded-xl border border-red-900/50 text-center outline-none focus:border-red-400 focus:ring-2 focus:ring-red-500/20 text-white font-bold transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-green-400 mb-1 block">Métabolisme (kcal)</label>
+                                <input type="number" id="vb-bmr" class="w-full bg-zinc-950 p-3 rounded-xl border border-green-900/50 text-center outline-none focus:border-green-400 focus:ring-2 focus:ring-green-500/20 text-white font-bold transition-all">
                             </div>
                         </div>
-                        <button onclick="saveVisbody()" class="w-full bg-zinc-100 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-transform hover:bg-white text-lg shadow-lg">Enregistrer</button>
+
+                        <button onclick="saveVisbody()" class="w-full bg-zinc-100 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-transform hover:bg-white text-lg shadow-lg">Enregistrer l'analyse</button>
                     </div>
                 </div>
 
                 <div>
-                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Évolution Corporelle</h2>
+                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Évolution Majeure</h2>
                     <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[380px] shadow-2xl backdrop-blur-sm">
                         <canvas id="visbodyChart"></canvas>
                     </div>
@@ -111,7 +128,7 @@
     </main>
 
     <script>
-        // 🚨 REMPLACE CES DEUX LIGNES PAR TES CLÉS SUPABASE 🚨
+        // Tes clés Supabase sont bien là !
         const SUPABASE_URL = 'https://vqtwxbsaieuajaddvbsj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdHd4YnNhaWV1YWphZGR2YnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjQ4MDQsImV4cCI6MjA4NzgwMDgwNH0.dGoigHDlSDxNELv07EL95-0N_Q6Q4aCrSVFC3jG2jyE';
 
@@ -119,13 +136,10 @@
         let globalWorkoutHistory = [];
         let globalVisbodyData = [];
 
-        // BASE DE DONNÉES DES PROGRAMMES
         const workoutsData = [
-            // Programme de Base
             { id: 'push', type: 'base', name: 'Séance Push', color: 'from-blue-600 to-blue-900', exercises: ['Développé couché', 'Chest press inclinée', 'Développé militaire', 'Triceps barre droite', 'Triceps barre V'] },
             { id: 'pull', type: 'base', name: 'Séance Pull', color: 'from-emerald-600 to-emerald-900', exercises: ['Tirage vertical', 'Tirage horizontal', 'Rowing', 'Biceps poulie', 'Curl marteau'] },
             { id: 'legs', type: 'base', name: 'Séance Legs', color: 'from-orange-600 to-orange-900', exercises: ['Squat pendulum', 'Soulevé de terre roumain', 'Presse', 'Leg extension', 'Leg curl', 'Mollets'] },
-            // Séances Bonus
             { id: 'bonus_fb', type: 'bonus', name: 'Full Body (Général)', color: 'from-purple-600 to-purple-900', exercises: ['Fentes bulgares', 'Développé incliné haltères', 'Tirage poitrine', 'Élévations latérales', 'Curl pupitre', 'Abdos'] },
             { id: 'bonus_arms', type: 'bonus', name: 'Focus Bras & Épaules', color: 'from-pink-600 to-pink-900', exercises: ['Curl barre', 'Extension triceps poulie', 'Élévations latérales', 'Face pull', 'Curl marteau', 'Dips'] },
             { id: 'bonus_weak', type: 'bonus', name: 'Points Faibles (Dos/Pecs)', color: 'from-red-600 to-red-900', exercises: ['Pull-over', 'Écarté poulie vis-à-vis', 'Tirage bras tendus', 'Oiseau haltères', 'Shrugs'] }
@@ -135,25 +149,22 @@
         let vChart = null;
         let sChart = null;
 
-        // Générer la date locale au format YYYY-MM-DD pour Supabase
         function getLocalIsoDate() {
             const d = new Date();
             return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
         }
 
-        // Formater une date YYYY-MM-DD en "27 févr." pour les graphiques
         function formatPrettyDate(isoDateString) {
             return new Date(isoDateString).toLocaleDateString('fr-FR', {day: '2-digit', month: 'short'});
         }
 
-        // CHARGEMENT DEPUIS SUPABASE
         async function loadDataFromCloud() {
             const statusBadge = document.getElementById('sync-status');
             
-            const { data: workouts, error: errW } = await supabaseClient.from('workouts').select('*').order('date', { ascending: true });
+            const { data: workouts } = await supabaseClient.from('workouts').select('*').order('date', { ascending: true });
             if (workouts) globalWorkoutHistory = workouts;
 
-            const { data: visbody, error: errV } = await supabaseClient.from('visbody').select('*').order('date', { ascending: true });
+            const { data: visbody } = await supabaseClient.from('visbody').select('*').order('date', { ascending: true });
             if (visbody) globalVisbodyData = visbody;
 
             statusBadge.innerText = "Connecté ✅";
@@ -167,7 +178,6 @@
             loadDataFromCloud();
         });
 
-        // ONGLETS
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
@@ -178,7 +188,6 @@
             if(tabId === 'progress') renderStatsChart();
         }
 
-        // AFFICHAGE DES CARTES DE SÉANCES
         function renderWorkoutList() {
             const baseContainer = document.getElementById('base-workouts-container');
             const bonusContainer = document.getElementById('bonus-workouts-container');
@@ -199,7 +208,6 @@
             });
         }
 
-        // OUVRIR UNE SÉANCE
         function openWorkout(id) {
             currentWorkoutId = id;
             const workout = workoutsData.find(w => w.id === id);
@@ -250,7 +258,6 @@
             currentWorkoutId = null;
         }
 
-        // SAUVEGARDER LA SÉANCE
         async function saveWorkout() {
             const workout = workoutsData.find(w => w.id === currentWorkoutId);
             const sessionData = {};
@@ -271,10 +278,10 @@
 
             if(!hasData) return alert("Tu n'as rien rempli !");
 
-            const isoDate = getLocalIsoDate(); // Format YYYY-MM-DD propre pour la BDD
+            const isoDate = getLocalIsoDate();
 
             document.getElementById('sync-status').innerText = "Envoi...";
-            const { data, error } = await supabaseClient.from('workouts').insert([
+            const { error } = await supabaseClient.from('workouts').insert([
                 { date: isoDate, workout_id: currentWorkoutId, data: sessionData }
             ]);
 
@@ -286,35 +293,41 @@
             }
         }
 
-        // SAUVEGARDER VISBODY
         async function saveVisbody() {
-            const weight = document.getElementById('vb-weight').value;
-            const fat = document.getElementById('vb-fat').value;
-            const muscle = document.getElementById('vb-muscle').value;
+            const payload = {
+                weight: document.getElementById('vb-weight').value,
+                fat: document.getElementById('vb-fat').value,
+                muscle: document.getElementById('vb-muscle').value,
+                water: document.getElementById('vb-water').value,
+                bone: document.getElementById('vb-bone').value,
+                visceral: document.getElementById('vb-visceral').value,
+                bmr: document.getElementById('vb-bmr').value,
+                score: document.getElementById('vb-score').value
+            };
 
-            if (!weight && !fat && !muscle) return alert('Renseigne au moins une valeur !');
-
-            const isoDate = getLocalIsoDate(); // Format YYYY-MM-DD propre pour la BDD
+            if (!payload.weight && !payload.fat && !payload.muscle) return alert('Renseigne au moins le poids ou le muscle !');
 
             document.getElementById('sync-status').innerText = "Envoi...";
-            const { error } = await supabaseClient.from('visbody').insert([
-                { date: isoDate, weight: parseFloat(weight) || null, fat: parseFloat(fat) || null, muscle: parseFloat(muscle) || null }
-            ]);
+            
+            const insertData = { date: getLocalIsoDate() };
+            for (const key in payload) {
+                insertData[key] = parseFloat(payload[key]) || null;
+            }
+
+            const { error } = await supabaseClient.from('visbody').insert([insertData]);
 
             if(error) alert("Erreur : " + error.message);
             else {
-                document.getElementById('vb-weight').value = ''; document.getElementById('vb-fat').value = ''; document.getElementById('vb-muscle').value = '';
+                for (const key in payload) { document.getElementById('vb-' + key).value = ''; }
                 await loadDataFromCloud();
                 renderVisbodyChart();
             }
         }
 
-        // BEAUX GRAPHIQUES : VISBODY
         function renderVisbodyChart() {
             const ctx = document.getElementById('visbodyChart').getContext('2d');
             if (vChart) vChart.destroy();
 
-            // Remplissage avec dégradé sous la courbe
             let gradientPoids = ctx.createLinearGradient(0, 0, 0, 400);
             gradientPoids.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
             gradientPoids.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -328,7 +341,7 @@
                 data: {
                     labels: globalVisbodyData.map(d => formatPrettyDate(d.date)),
                     datasets: [
-                        { label: 'Poids (kg)', data: globalVisbodyData.map(d => d.weight), borderColor: '#ffffff', backgroundColor: gradientPoids, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 },
+                        { label: 'Poids total (kg)', data: globalVisbodyData.map(d => d.weight), borderColor: '#ffffff', backgroundColor: gradientPoids, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 },
                         { label: 'Muscle (kg)', data: globalVisbodyData.map(d => d.muscle), borderColor: '#f97316', backgroundColor: gradientMuscle, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#f97316', pointBorderWidth: 2, pointRadius: 4 }
                     ]
                 },
@@ -344,11 +357,10 @@
             });
         }
 
-        // BEAUX GRAPHIQUES : STATS DE FORCE
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
-            let allExos = [...new Set(workoutsData.flatMap(w => w.exercises))].sort(); // Liste unique triée
+            let allExos = [...new Set(workoutsData.flatMap(w => w.exercises))].sort(); 
             
             select.innerHTML = '';
             allExos.forEach(exo => { select.innerHTML += `<option value="${exo}">${exo}</option>`; });
@@ -368,7 +380,6 @@
             const ctx = document.getElementById('statsChart').getContext('2d');
             if (sChart) sChart.destroy();
 
-            // Remplissage avec dégradé bleu pour la force
             let gradientForce = ctx.createLinearGradient(0, 0, 0, 400);
             gradientForce.addColorStop(0, 'rgba(59, 130, 246, 0.8)');
             gradientForce.addColorStop(1, 'rgba(30, 58, 138, 0.2)');
