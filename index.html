@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #09090b; color: #fafafa; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Astuce pour masquer la barre de défilement tout en gardant le scroll */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950">
+
+    <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-4xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
+        <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">EasyTrack</h1>
+        <div id="sync-status" class="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-sm transition-colors">Connexion...</div>
+    </header>
+
+    <nav class="fixed bottom-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800 pb-safe z-40 md:top-0 md:bottom-auto md:w-auto md:left-1/2 md:-translate-x-1/2 md:border-t-0 md:border-b md:rounded-b-2xl md:px-6">
+        <div class="flex justify-around p-3 md:pb-3 md:gap-8">
+            <button onclick="switchTab('workouts')" class="flex flex-col items-center gap-1 text-white transition-opacity duration-200 hover:scale-105" id="nav-workouts">
+                <span class="text-xl md:text-2xl">🏋️‍♂️</span><span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Séances</span>
+            </button>
+            <button onclick="switchTab('progress')" class="flex flex-col items-center gap-1 text-white opacity-40 transition-opacity duration-200 hover:scale-105 hover:opacity-100" id="nav-progress">
+                <span class="text-xl md:text-2xl">📈</span><span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Stats</span>
+            </button>
+            <button onclick="switchTab('visbody')" class="flex flex-col items-center gap-1 text-white opacity-40 transition-opacity duration-200 hover:scale-105 hover:opacity-100" id="nav-visbody">
+                <span class="text-xl md:text-2xl">⚖️</span><span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Visbody</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="p-6 max-w-4xl mx-auto">
+        
+        <section id="tab-workouts" class="tab-content active">
+            <div id="workout-list" class="space-y-6">
+                <h2 class="text-2xl font-semibold text-zinc-300 mb-2">Programme de Base</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="base-workouts-container"></div>
+                
+                <h2 class="text-2xl font-semibold text-zinc-300 mt-8 mb-2">Séances Bonus</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="bonus-workouts-container"></div>
+            </div>
+
+            <div id="active-workout" class="hidden space-y-6">
+                <div class="flex items-center justify-between mb-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+                    <button onclick="closeWorkout()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors">← Retour</button>
+                    <span id="workout-title" class="font-bold text-xl text-white"></span>
+                </div>
+                <div id="exercises-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <button onclick="saveWorkout()" class="w-full bg-white text-black font-extrabold text-xl py-5 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-95 transition-transform hover:bg-zinc-200 mt-8">
+                    ✅ Valider la séance
+                </button>
+            </div>
+        </section>
+
+        <section id="tab-progress" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Progression de Force</h2>
+            <div class="mb-6 max-w-md">
+                <label class="block text-sm font-medium text-zinc-400 mb-2">Sélectionne un exercice :</label>
+                <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-900 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-4 outline-none transition-all cursor-pointer">
+                    </select>
+            </div>
+            <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="tab-visbody" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Nouvelle Pesée</h2>
+                    <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl space-y-6 backdrop-blur-sm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm font-medium text-zinc-400 mb-2 block">Poids total (kg)</label>
+                                <input type="number" id="vb-weight" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-1/2">
+                                    <label class="text-sm font-medium text-zinc-400 mb-2 block">Gras (%)</label>
+                                    <input type="number" id="vb-fat" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
+                                </div>
+                                <div class="w-1/2">
+                                    <label class="text-sm font-medium text-zinc-400 mb-2 block">Muscle (kg)</label>
+                                    <input type="number" id="vb-muscle" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold text-lg transition-all">
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="saveVisbody()" class="w-full bg-zinc-100 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-transform hover:bg-white text-lg shadow-lg">Enregistrer</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Évolution Corporelle</h2>
+                    <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[380px] shadow-2xl backdrop-blur-sm">
+                        <canvas id="visbodyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 🚨 REMPLACE CES DEUX LIGNES PAR TES CLÉS SUPABASE 🚨
+        const SUPABASE_URL = 'https://vqtwxbsaieuajaddvbsj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdHd4YnNhaWV1YWphZGR2YnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjQ4MDQsImV4cCI6MjA4NzgwMDgwNH0.dGoigHDlSDxNELv07EL95-0N_Q6Q4aCrSVFC3jG2jyE';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let globalWorkoutHistory = [];
+        let globalVisbodyData = [];
+
+        // BASE DE DONNÉES DES PROGRAMMES
+        const workoutsData = [
+            // Programme de Base
+            { id: 'push', type: 'base', name: 'Séance Push', color: 'from-blue-600 to-blue-900', exercises: ['Développé couché', 'Chest press inclinée', 'Développé militaire', 'Triceps barre droite', 'Triceps barre V'] },
+            { id: 'pull', type: 'base', name: 'Séance Pull', color: 'from-emerald-600 to-emerald-900', exercises: ['Tirage vertical', 'Tirage horizontal', 'Rowing', 'Biceps poulie', 'Curl marteau'] },
+            { id: 'legs', type: 'base', name: 'Séance Legs', color: 'from-orange-600 to-orange-900', exercises: ['Squat pendulum', 'Soulevé de terre roumain', 'Presse', 'Leg extension', 'Leg curl', 'Mollets'] },
+            // Séances Bonus
+            { id: 'bonus_fb', type: 'bonus', name: 'Full Body (Général)', color: 'from-purple-600 to-purple-900', exercises: ['Fentes bulgares', 'Développé incliné haltères', 'Tirage poitrine', 'Élévations latérales', 'Curl pupitre', 'Abdos'] },
+            { id: 'bonus_arms', type: 'bonus', name: 'Focus Bras & Épaules', color: 'from-pink-600 to-pink-900', exercises: ['Curl barre', 'Extension triceps poulie', 'Élévations latérales', 'Face pull', 'Curl marteau', 'Dips'] },
+            { id: 'bonus_weak', type: 'bonus', name: 'Points Faibles (Dos/Pecs)', color: 'from-red-600 to-red-900', exercises: ['Pull-over', 'Écarté poulie vis-à-vis', 'Tirage bras tendus', 'Oiseau haltères', 'Shrugs'] }
+        ];
+
+        let currentWorkoutId = null;
+        let vChart = null;
+        let sChart = null;
+
+        // Générer la date locale au format YYYY-MM-DD pour Supabase
+        function getLocalIsoDate() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+
+        // Formater une date YYYY-MM-DD en "27 févr." pour les graphiques
+        function formatPrettyDate(isoDateString) {
+            return new Date(isoDateString).toLocaleDateString('fr-FR', {day: '2-digit', month: 'short'});
+        }
+
+        // CHARGEMENT DEPUIS SUPABASE
+        async function loadDataFromCloud() {
+            const statusBadge = document.getElementById('sync-status');
+            
+            const { data: workouts, error: errW } = await supabaseClient.from('workouts').select('*').order('date', { ascending: true });
+            if (workouts) globalWorkoutHistory = workouts;
+
+            const { data: visbody, error: errV } = await supabaseClient.from('visbody').select('*').order('date', { ascending: true });
+            if (visbody) globalVisbodyData = visbody;
+
+            statusBadge.innerText = "Connecté ✅";
+            statusBadge.className = "text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-sm transition-colors";
+
+            populateStatsSelect();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorkoutList();
+            loadDataFromCloud();
+        });
+
+        // ONGLETS
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.replace('opacity-100', 'opacity-40') || btn.classList.replace('opacity-40', 'opacity-40'));
+            document.getElementById('nav-' + tabId).classList.replace('opacity-40', 'opacity-100');
+
+            if(tabId === 'visbody') renderVisbodyChart();
+            if(tabId === 'progress') renderStatsChart();
+        }
+
+        // AFFICHAGE DES CARTES DE SÉANCES
+        function renderWorkoutList() {
+            const baseContainer = document.getElementById('base-workouts-container');
+            const bonusContainer = document.getElementById('bonus-workouts-container');
+            baseContainer.innerHTML = ''; bonusContainer.innerHTML = '';
+
+            workoutsData.forEach(w => {
+                const card = `
+                    <button onclick="openWorkout('${w.id}')" class="w-full h-full bg-gradient-to-br ${w.color} p-6 rounded-3xl flex flex-col justify-center items-start shadow-xl active:scale-95 transition-all hover:scale-[1.02] text-left border border-white/10 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity transform group-hover:scale-110">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-2 relative z-10">${w.name}</h3>
+                        <p class="text-white/80 text-sm font-semibold relative z-10 bg-black/20 px-3 py-1 rounded-full">${w.exercises.length} exercices</p>
+                    </button>
+                `;
+                if(w.type === 'base') baseContainer.innerHTML += card;
+                else bonusContainer.innerHTML += card;
+            });
+        }
+
+        // OUVRIR UNE SÉANCE
+        function openWorkout(id) {
+            currentWorkoutId = id;
+            const workout = workoutsData.find(w => w.id === id);
+            document.getElementById('workout-list').classList.add('hidden');
+            document.getElementById('workout-title').innerText = workout.name;
+            document.getElementById('active-workout').classList.remove('hidden');
+            
+            const exoList = document.getElementById('exercises-list');
+            exoList.innerHTML = '';
+
+            workout.exercises.forEach((exo, exoIndex) => {
+                let prevText = "Pas de record";
+                for(let i = globalWorkoutHistory.length - 1; i >= 0; i--) {
+                    if(globalWorkoutHistory[i].data[exo]) {
+                        const bestSet = globalWorkoutHistory[i].data[exo][0];
+                        prevText = `Dernier : ${bestSet.weight}kg x ${bestSet.reps}`;
+                        break;
+                    }
+                }
+
+                let html = `
+                    <div class="bg-zinc-900/80 p-5 rounded-3xl border border-zinc-800 shadow-md backdrop-blur-sm transition-colors hover:border-zinc-700">
+                        <div class="mb-5 flex justify-between items-center">
+                            <h3 class="font-bold text-lg text-white">${exo}</h3>
+                            <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg font-bold">${prevText}</span>
+                        </div>
+                        <div class="space-y-3">
+                `;
+                
+                for(let i=0; i<3; i++) {
+                    html += `
+                        <div class="flex gap-3 items-center bg-zinc-950/50 p-2 rounded-xl">
+                            <span class="text-zinc-500 font-bold text-sm w-8 text-center">S${i+1}</span>
+                            <input type="number" id="val-${exoIndex}-set-${i}-w" placeholder="Kg" class="w-1/2 bg-zinc-900 p-3 rounded-lg border border-zinc-700 text-center outline-none focus:border-white focus:ring-1 focus:ring-white text-white font-bold transition-all">
+                            <input type="number" id="val-${exoIndex}-set-${i}-r" placeholder="Reps" class="w-1/2 bg-zinc-900 p-3 rounded-lg border border-zinc-700 text-center outline-none focus:border-white focus:ring-1 focus:ring-white text-white font-bold transition-all">
+                        </div>
+                    `;
+                }
+                html += `</div></div>`;
+                exoList.innerHTML += html;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeWorkout() {
+            document.getElementById('active-workout').classList.add('hidden');
+            document.getElementById('workout-list').classList.remove('hidden');
+            currentWorkoutId = null;
+        }
+
+        // SAUVEGARDER LA SÉANCE
+        async function saveWorkout() {
+            const workout = workoutsData.find(w => w.id === currentWorkoutId);
+            const sessionData = {};
+            let hasData = false;
+
+            workout.exercises.forEach((exo, exoIndex) => {
+                const sets = [];
+                for(let i=0; i<3; i++) {
+                    const w = document.getElementById(`val-${exoIndex}-set-${i}-w`).value;
+                    const r = document.getElementById(`val-${exoIndex}-set-${i}-r`).value;
+                    if(w || r) {
+                        sets.push({ weight: parseFloat(w)||0, reps: parseInt(r)||0 });
+                        hasData = true;
+                    }
+                }
+                if(sets.length > 0) sessionData[exo] = sets;
+            });
+
+            if(!hasData) return alert("Tu n'as rien rempli !");
+
+            const isoDate = getLocalIsoDate(); // Format YYYY-MM-DD propre pour la BDD
+
+            document.getElementById('sync-status').innerText = "Envoi...";
+            const { data, error } = await supabaseClient.from('workouts').insert([
+                { date: isoDate, workout_id: currentWorkoutId, data: sessionData }
+            ]);
+
+            if(error) alert("Erreur : " + error.message);
+            else {
+                alert("💪 Séance enregistrée avec succès !");
+                await loadDataFromCloud();
+                closeWorkout();
+            }
+        }
+
+        // SAUVEGARDER VISBODY
+        async function saveVisbody() {
+            const weight = document.getElementById('vb-weight').value;
+            const fat = document.getElementById('vb-fat').value;
+            const muscle = document.getElementById('vb-muscle').value;
+
+            if (!weight && !fat && !muscle) return alert('Renseigne au moins une valeur !');
+
+            const isoDate = getLocalIsoDate(); // Format YYYY-MM-DD propre pour la BDD
+
+            document.getElementById('sync-status').innerText = "Envoi...";
+            const { error } = await supabaseClient.from('visbody').insert([
+                { date: isoDate, weight: parseFloat(weight) || null, fat: parseFloat(fat) || null, muscle: parseFloat(muscle) || null }
+            ]);
+
+            if(error) alert("Erreur : " + error.message);
+            else {
+                document.getElementById('vb-weight').value = ''; document.getElementById('vb-fat').value = ''; document.getElementById('vb-muscle').value = '';
+                await loadDataFromCloud();
+                renderVisbodyChart();
+            }
+        }
+
+        // BEAUX GRAPHIQUES : VISBODY
+        function renderVisbodyChart() {
+            const ctx = document.getElementById('visbodyChart').getContext('2d');
+            if (vChart) vChart.destroy();
+
+            // Remplissage avec dégradé sous la courbe
+            let gradientPoids = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientPoids.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
+            gradientPoids.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            let gradientMuscle = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientMuscle.addColorStop(0, 'rgba(249, 115, 22, 0.2)');
+            gradientMuscle.addColorStop(1, 'rgba(249, 115, 22, 0)');
+
+            vChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: globalVisbodyData.map(d => formatPrettyDate(d.date)),
+                    datasets: [
+                        { label: 'Poids (kg)', data: globalVisbodyData.map(d => d.weight), borderColor: '#ffffff', backgroundColor: gradientPoids, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 },
+                        { label: 'Muscle (kg)', data: globalVisbodyData.map(d => d.muscle), borderColor: '#f97316', backgroundColor: gradientMuscle, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#f97316', pointBorderWidth: 2, pointRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { labels: { color: '#e4e4e7', font: {family: 'system-ui', size: 13, weight: 'bold'}, usePointStyle: true, boxWidth: 8 } } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} } },
+                        x: { grid: { display: false }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} } }
+                    }
+                }
+            });
+        }
+
+        // BEAUX GRAPHIQUES : STATS DE FORCE
+        function populateStatsSelect() {
+            const select = document.getElementById('stats-exo-select');
+            const currentSelection = select.value;
+            let allExos = [...new Set(workoutsData.flatMap(w => w.exercises))].sort(); // Liste unique triée
+            
+            select.innerHTML = '';
+            allExos.forEach(exo => { select.innerHTML += `<option value="${exo}">${exo}</option>`; });
+            if(currentSelection && allExos.includes(currentSelection)) select.value = currentSelection;
+        }
+
+        function renderStatsChart() {
+            const selectedExo = document.getElementById('stats-exo-select').value;
+            const chartData = [];
+            globalWorkoutHistory.forEach(session => {
+                if(session.data[selectedExo]) {
+                    const maxWeight = Math.max(...session.data[selectedExo].map(set => set.weight));
+                    chartData.push({ date: session.date, weight: maxWeight });
+                }
+            });
+
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            if (sChart) sChart.destroy();
+
+            // Remplissage avec dégradé bleu pour la force
+            let gradientForce = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientForce.addColorStop(0, 'rgba(59, 130, 246, 0.8)');
+            gradientForce.addColorStop(1, 'rgba(30, 58, 138, 0.2)');
+
+            sChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(d => formatPrettyDate(d.date)),
+                    datasets: [{
+                        label: 'Charge Max (kg)',
+                        data: chartData.map(d => d.weight),
+                        backgroundColor: gradientForce,
+                        borderColor: '#3b82f6',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        hoverBackgroundColor: '#60a5fa'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: {size: 14}, bodyFont: {size: 14, weight: 'bold'}, padding: 12, cornerRadius: 8 } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} }, beginAtZero: false },
+                        x: { grid: { display: false }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
