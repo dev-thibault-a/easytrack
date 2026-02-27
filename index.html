@@ -19,7 +19,7 @@
 </head>
 <body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950">
 
-    <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-4xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
+    <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-5xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
         <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">⚡ EasyTrack</h1>
         <div id="sync-status" class="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-sm transition-colors">Connexion...</div>
     </header>
@@ -38,7 +38,7 @@
         </div>
     </nav>
 
-    <main class="p-6 max-w-4xl mx-auto">
+    <main class="p-6 max-w-5xl mx-auto">
         
         <section id="tab-workouts" class="tab-content active">
             <div id="workout-list" class="space-y-6">
@@ -72,63 +72,66 @@
         </section>
 
         <section id="tab-visbody" class="tab-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Bilan Visbody Pro</h2>
-                    <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl space-y-6 backdrop-blur-sm">
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Poids total (kg)</label>
-                                <input type="number" id="vb-weight" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-purple-400 mb-1 block">Score Santé (0-100)</label>
-                                <input type="number" id="vb-score" class="w-full bg-zinc-950 p-3 rounded-xl border border-purple-900/50 text-center outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Masse Grasse (%)</label>
-                                <input type="number" id="vb-fat" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-orange-400 mb-1 block">Muscle (kg)</label>
-                                <input type="number" id="vb-muscle" class="w-full bg-zinc-950 p-3 rounded-xl border border-orange-900/50 text-center outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-blue-400 mb-1 block">Eau corporelle (kg)</label>
-                                <input type="number" id="vb-water" class="w-full bg-zinc-950 p-3 rounded-xl border border-blue-900/50 text-center outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-zinc-400 mb-1 block">Os / Minéraux (kg)</label>
-                                <input type="number" id="vb-bone" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-red-400 mb-1 block">Graisse Viscérale</label>
-                                <input type="number" id="vb-visceral" class="w-full bg-zinc-950 p-3 rounded-xl border border-red-900/50 text-center outline-none focus:border-red-400 focus:ring-2 focus:ring-red-500/20 text-white font-bold transition-all">
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-green-400 mb-1 block">Métabolisme (kcal)</label>
-                                <input type="number" id="vb-bmr" class="w-full bg-zinc-950 p-3 rounded-xl border border-green-900/50 text-center outline-none focus:border-green-400 focus:ring-2 focus:ring-green-500/20 text-white font-bold transition-all">
-                            </div>
-                        </div>
-
-                        <button onclick="saveVisbody()" class="w-full bg-zinc-100 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-transform hover:bg-white text-lg shadow-lg">Enregistrer l'analyse</button>
+            
+            <div class="max-w-2xl mx-auto mb-10">
+                <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Bilan Visbody Pro</h2>
+                <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl space-y-6 backdrop-blur-sm">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div><label class="text-xs font-medium text-zinc-400 mb-1 block">Poids total</label><input type="number" id="vb-weight" placeholder="kg" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-purple-400 mb-1 block">Score Santé</label><input type="number" id="vb-score" placeholder="0-100" class="w-full bg-zinc-950 p-3 rounded-xl border border-purple-900/50 text-center outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-zinc-400 mb-1 block">Masse Grasse</label><input type="number" id="vb-fat" placeholder="%" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-orange-400 mb-1 block">Muscle</label><input type="number" id="vb-muscle" placeholder="kg" class="w-full bg-zinc-950 p-3 rounded-xl border border-orange-900/50 text-center outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-blue-400 mb-1 block">Eau corporelle</label><input type="number" id="vb-water" placeholder="kg" class="w-full bg-zinc-950 p-3 rounded-xl border border-blue-900/50 text-center outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-zinc-400 mb-1 block">Os / Minéraux</label><input type="number" id="vb-bone" placeholder="kg" class="w-full bg-zinc-950 p-3 rounded-xl border border-zinc-700 text-center outline-none focus:border-white focus:ring-2 focus:ring-white/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-red-400 mb-1 block">Viscérale</label><input type="number" id="vb-visceral" placeholder="Niv." class="w-full bg-zinc-950 p-3 rounded-xl border border-red-900/50 text-center outline-none focus:border-red-400 focus:ring-2 focus:ring-red-500/20 text-white font-bold transition-all"></div>
+                        <div><label class="text-xs font-medium text-green-400 mb-1 block">Métabolisme</label><input type="number" id="vb-bmr" placeholder="kcal" class="w-full bg-zinc-950 p-3 rounded-xl border border-green-900/50 text-center outline-none focus:border-green-400 focus:ring-2 focus:ring-green-500/20 text-white font-bold transition-all"></div>
                     </div>
-                </div>
-
-                <div>
-                    <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Évolution Majeure</h2>
-                    <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[380px] shadow-2xl backdrop-blur-sm">
-                        <canvas id="visbodyChart"></canvas>
-                    </div>
+                    <button onclick="saveVisbody()" class="w-full bg-zinc-100 text-black font-extrabold py-3 rounded-xl active:scale-95 transition-transform hover:bg-white text-lg shadow-lg">Enregistrer l'analyse</button>
                 </div>
             </div>
+
+            <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Tableau de bord de l'évolution</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-white mb-2 uppercase tracking-wider text-center">Poids total (kg)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-weight"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-purple-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider text-center">Score Santé</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-score"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Masse Grasse (%)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-fat"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-orange-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-orange-400 mb-2 uppercase tracking-wider text-center">Muscle (kg)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-muscle"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-blue-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-blue-400 mb-2 uppercase tracking-wider text-center">Eau Corporelle (kg)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-water"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Os / Minéraux (kg)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-bone"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-red-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider text-center">Graisse Viscérale</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-visceral"></canvas></div>
+                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-green-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
+                    <h3 class="text-xs font-bold text-green-400 mb-2 uppercase tracking-wider text-center">Métabolisme (kcal)</h3>
+                    <div class="flex-grow relative"><canvas id="vbChart-bmr"></canvas></div>
+                </div>
+            </div>
+
         </section>
 
     </main>
 
     <script>
-        // Tes clés Supabase sont bien là !
+        // Tes clés Supabase
         const SUPABASE_URL = 'https://vqtwxbsaieuajaddvbsj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdHd4YnNhaWV1YWphZGR2YnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjQ4MDQsImV4cCI6MjA4NzgwMDgwNH0.dGoigHDlSDxNELv07EL95-0N_Q6Q4aCrSVFC3jG2jyE';
 
@@ -146,8 +149,8 @@
         ];
 
         let currentWorkoutId = null;
-        let vChart = null;
         let sChart = null;
+        let vbCharts = {}; // Objet pour stocker les 8 graphiques Visbody
 
         function getLocalIsoDate() {
             const d = new Date();
@@ -184,7 +187,7 @@
             document.querySelectorAll('nav button').forEach(btn => btn.classList.replace('opacity-100', 'opacity-40') || btn.classList.replace('opacity-40', 'opacity-40'));
             document.getElementById('nav-' + tabId).classList.replace('opacity-40', 'opacity-100');
 
-            if(tabId === 'visbody') renderVisbodyChart();
+            if(tabId === 'visbody') renderAllVisbodyCharts();
             if(tabId === 'progress') renderStatsChart();
         }
 
@@ -296,16 +299,16 @@
         async function saveVisbody() {
             const payload = {
                 weight: document.getElementById('vb-weight').value,
+                score: document.getElementById('vb-score').value,
                 fat: document.getElementById('vb-fat').value,
                 muscle: document.getElementById('vb-muscle').value,
                 water: document.getElementById('vb-water').value,
                 bone: document.getElementById('vb-bone').value,
                 visceral: document.getElementById('vb-visceral').value,
-                bmr: document.getElementById('vb-bmr').value,
-                score: document.getElementById('vb-score').value
+                bmr: document.getElementById('vb-bmr').value
             };
 
-            if (!payload.weight && !payload.fat && !payload.muscle) return alert('Renseigne au moins le poids ou le muscle !');
+            if (!payload.weight && !payload.muscle && !payload.fat) return alert('Renseigne au moins une donnée principale !');
 
             document.getElementById('sync-status').innerText = "Envoi...";
             
@@ -320,43 +323,56 @@
             else {
                 for (const key in payload) { document.getElementById('vb-' + key).value = ''; }
                 await loadDataFromCloud();
-                renderVisbodyChart();
+                renderAllVisbodyCharts();
             }
         }
 
-        function renderVisbodyChart() {
-            const ctx = document.getElementById('visbodyChart').getContext('2d');
-            if (vChart) vChart.destroy();
+        // --- GÉNÉRATION DES 8 GRAPHIQUES VISBODY ---
+        const visbodyConfig = [
+            { id: 'weight', color: '#ffffff', bg: 'rgba(255,255,255,0.1)' },
+            { id: 'score', color: '#c084fc', bg: 'rgba(192,132,252,0.1)' },
+            { id: 'fat', color: '#a1a1aa', bg: 'rgba(161,161,170,0.1)' },
+            { id: 'muscle', color: '#fb923c', bg: 'rgba(251,146,60,0.1)' },
+            { id: 'water', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)' },
+            { id: 'bone', color: '#d4d4d8', bg: 'rgba(212,212,216,0.1)' },
+            { id: 'visceral', color: '#f87171', bg: 'rgba(248,113,113,0.1)' },
+            { id: 'bmr', color: '#4ade80', bg: 'rgba(74,222,128,0.1)' }
+        ];
 
-            let gradientPoids = ctx.createLinearGradient(0, 0, 0, 400);
-            gradientPoids.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
-            gradientPoids.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        function renderAllVisbodyCharts() {
+            visbodyConfig.forEach(config => {
+                const ctx = document.getElementById(`vbChart-${config.id}`).getContext('2d');
+                if (vbCharts[config.id]) vbCharts[config.id].destroy();
 
-            let gradientMuscle = ctx.createLinearGradient(0, 0, 0, 400);
-            gradientMuscle.addColorStop(0, 'rgba(249, 115, 22, 0.2)');
-            gradientMuscle.addColorStop(1, 'rgba(249, 115, 22, 0)');
+                let gradient = ctx.createLinearGradient(0, 0, 0, 150);
+                gradient.addColorStop(0, config.bg);
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
 
-            vChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: globalVisbodyData.map(d => formatPrettyDate(d.date)),
-                    datasets: [
-                        { label: 'Poids total (kg)', data: globalVisbodyData.map(d => d.weight), borderColor: '#ffffff', backgroundColor: gradientPoids, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 },
-                        { label: 'Muscle (kg)', data: globalVisbodyData.map(d => d.muscle), borderColor: '#f97316', backgroundColor: gradientMuscle, fill: true, tension: 0.4, borderWidth: 3, pointBackgroundColor: '#000', pointBorderColor: '#f97316', pointBorderWidth: 2, pointRadius: 4 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { labels: { color: '#e4e4e7', font: {family: 'system-ui', size: 13, weight: 'bold'}, usePointStyle: true, boxWidth: 8 } } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} } },
-                        x: { grid: { display: false }, ticks: { color: '#a1a1aa', font: {family: 'system-ui'} } }
+                vbCharts[config.id] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: globalVisbodyData.map(d => formatPrettyDate(d.date)),
+                        datasets: [{
+                            data: globalVisbodyData.map(d => d[config.id]),
+                            borderColor: config.color,
+                            backgroundColor: gradient,
+                            fill: true, tension: 0.4, borderWidth: 2,
+                            pointBackgroundColor: '#000', pointBorderColor: config.color, pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { titleFont: {size: 10}, bodyFont: {size: 11, weight: 'bold'}, padding: 8 } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#71717a', font: {size: 10} } },
+                            x: { grid: { display: false }, ticks: { color: '#71717a', font: {size: 10}, maxRotation: 0 } }
+                        }
                     }
-                }
+                });
             });
         }
 
+        // --- STATS FORCE ---
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
@@ -393,8 +409,7 @@
                         data: chartData.map(d => d.weight),
                         backgroundColor: gradientForce,
                         borderColor: '#3b82f6',
-                        borderWidth: 1,
-                        borderRadius: 8,
+                        borderWidth: 1, borderRadius: 6,
                         hoverBackgroundColor: '#60a5fa'
                     }]
                 },
