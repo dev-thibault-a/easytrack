@@ -1,6 +1,6 @@
 # EasyTrack
 
-EasyTrack est une application web professionnelle (PWA) de suivi de musculation et d'analyse de composition corporelle (Visbody). Conçue pour être légère, rapide et 100% gratuite, elle fonctionne entièrement côté client avec une synchronisation des données en temps réel sur une base de données cloud (Supabase).
+EasyTrack est une application web de suivi de training muscu et d'analyse de composition corporelle (Visbody). Conçue pour être légère, rapide et 100% gratuite, elle fonctionne entièrement côté client avec une synchronisation des données en temps réel sur une base de données cloud (Supabase).
 
 Pensée pour une utilisation mobile à la salle de sport, elle permet de tracker ses performances, d'estimer sa progression globale et de visualiser l'évolution de son corps grâce à des tableaux de bord interactifs.
 
