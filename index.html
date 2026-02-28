@@ -124,13 +124,51 @@
             { id: 'bonus_weak', type: 'bonus', name: 'Points Faibles (Dos/Pecs)', color: 'from-red-600 to-red-900', exercises: ['Pull-over', 'Écarté poulie vis-à-vis', 'Tirage bras tendus', 'Oiseau haltères', 'Shrugs'] }
         ];
 
-        // 📸 DICTIONNAIRE DES PHOTOS DES EXERCICES
-        // Remplace les liens "images.unsplash.com" par tes propres liens Google Images si tu veux !
+        // 📸 LE FAMEUX DICTIONNAIRE COMPLET DES PHOTOS (31 EXERCICES)
+        // Remplace simplement les liens commençant par "https://placehold.co/..." par tes propres liens Google Images !
         const exerciseImages = {
-            'Développé couché': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=600&q=80',
-            'Squat pendulum': 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?auto=format&fit=crop&w=600&q=80',
-            'Tirage vertical': 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=600&q=80'
-            // Tu peux rajouter tes autres exos ici au même format !
+            // --- SÉANCE PUSH ---
+            'Développé couché': 'https://blog.myarsenalstrength.com/hs-fs/hubfs/Screenshot%202024-07-24%20at%209.54.41%20AM.png?width=460&height=388&name=Screenshot%202024-07-24%20at%209.54.41%20AM.png',
+            'Chest press inclinée': 'https://i.pinimg.com/originals/df/fd/85/dffd856bea5056e1adbb683c6ea54613.gif',
+            'Développé militaire': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif',
+            'Triceps barre droite': 'https://fitliferegime.com/wp-content/uploads/2023/06/Triceps-Pushdown.gif',
+            'Triceps barre V': 'https://fitnessprogramer.com/wp-content/uploads/2022/02/V-bar-Pushdown.gif',
+
+            // --- SÉANCE PULL ---
+            'Tirage vertical': 'https://pump-app.s3.eu-west-2.amazonaws.com/exercise-assets/12041101-Cable-one-arm-lat-pulldown_back_small.jpg',
+            'Tirage horizontal': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638351904146-GDGXXL9IHXKQKTXULLHF/Seated%2BCable%2BRow.jpeg',
+            'Rowing': 'https://training.fit/wp-content/uploads/2020/02/rudern-langhantel.png',
+            'Biceps poulie': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/One-Arm-Cable-Curl.gif',
+            'Curl marteau': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif',
+
+            // --- SÉANCE LEGS ---
+            'Squat pendulum': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Squat+Pendulum',
+            'Soulevé de terre roumain': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Soulevé+Terre+R.',
+            'Presse': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Presse+Cuisses',
+            'Leg extension': 'https://www.gymchalo.com/cdn/shop/articles/leg-extension-anatomy.jpg', // Le vrai lien d'exemple
+            'Leg curl': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Leg+Curl',
+            'Mollets': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Mollets',
+
+            // --- BONUS FULL BODY ---
+            'Fentes bulgares': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Fentes+Bulgares',
+            'Développé incliné haltères': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Dev.+Incliné',
+            'Tirage poitrine': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Tirage+Poitrine',
+            'Élévations latérales': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Elevations+Lat.',
+            'Curl pupitre': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Curl+Pupitre',
+            'Abdos': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Abdos',
+
+            // --- BONUS BRAS & ÉPAULES ---
+            'Curl barre': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Curl+Barre',
+            'Extension triceps poulie': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Extension+Triceps',
+            'Face pull': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Face+Pull',
+            'Dips': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Dips',
+
+            // --- BONUS POINTS FAIBLES ---
+            'Pull-over': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Pull-over',
+            'Écarté poulie vis-à-vis': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Ecarté+Poulie',
+            'Tirage bras tendus': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Bras+Tendus',
+            'Oiseau haltères': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Oiseau',
+            'Shrugs': 'https://placehold.co/600x400/18181b/ef4444?text=Anatomie:+Shrugs'
         };
 
         let currentWorkoutId = null;
@@ -196,7 +234,7 @@
             });
         }
 
-        // Fonction pour afficher/cacher la photo
+        // 📸 FONCTION POUR AFFICHER/CACHER L'IMAGE
         window.togglePhoto = function(id) {
             const el = document.getElementById(id);
             el.classList.toggle('hidden');
@@ -222,7 +260,7 @@
                     }
                 }
 
-                // Récupération de l'image (soit dans le dico, soit une image générique avec le nom de l'exo)
+                // 📸 Récupération de l'image (soit dans le dico, soit une image par défaut)
                 const imgUrl = exerciseImages[exo] || `https://placehold.co/600x300/18181b/3b82f6?text=${encodeURIComponent(exo)}`;
 
                 let html = `
@@ -327,7 +365,6 @@
             }
         }
 
-        // --- GÉNÉRATION DES 8 GRAPHIQUES VISBODY ---
         const visbodyConfig = [
             { id: 'weight', color: '#ffffff', bg: 'rgba(255,255,255,0.1)' },
             { id: 'score', color: '#c084fc', bg: 'rgba(192,132,252,0.1)' },
@@ -342,7 +379,7 @@
         function renderAllVisbodyCharts() {
             visbodyConfig.forEach(config => {
                 const canvas = document.getElementById(`vbChart-${config.id}`);
-                if(!canvas) return; // Sécurité si on n'est pas sur le bon onglet
+                if(!canvas) return; 
                 const ctx = canvas.getContext('2d');
                 if (vbCharts[config.id]) vbCharts[config.id].destroy();
 
@@ -373,7 +410,7 @@
             });
         }
 
-        // --- STATS FORCE (Mise à jour Perf Globale) ---
+        // --- STATS FORCE (Calcul 1RM + %) ---
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
@@ -390,7 +427,7 @@
             
             globalWorkoutHistory.forEach(session => {
                 if(session.data[selectedExo]) {
-                    // Calcul de la Perf Globale (1RM estimé) avec la formule d'Epley
+                    // Calcul 1RM Estimé (Formule Epley)
                     const best1RM = Math.max(...session.data[selectedExo].map(set => {
                         return Math.round(set.weight * (1 + set.reps / 30));
                     }));
@@ -398,7 +435,7 @@
                 }
             });
 
-            // GESTION DU TEXTE DE PROGRESSION (+X%)
+            // Pourcentage de progression
             const progDiv = document.getElementById('stats-progression');
             if(chartData.length >= 2) {
                 const firstPerf = chartData[0].score;
@@ -407,13 +444,12 @@
                     const diff = (((lastPerf - firstPerf) / firstPerf) * 100).toFixed(1);
                     const sign = diff >= 0 ? '+' : '';
                     const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-red-400';
-                    progDiv.innerHTML = `Perf globale : <span class="${colorClass} font-bold text-lg">${sign}${diff}%</span> depuis la première séance 🚀`;
+                    progDiv.innerHTML = `Perf globale : <span class="${colorClass} font-bold text-lg">${sign}${diff}%</span> depuis le début 🚀`;
                 }
             } else {
                 progDiv.innerHTML = 'Fais au moins 2 séances pour voir ton évolution !';
             }
 
-            // DESSIN DU GRAPHIQUE
             const ctx = document.getElementById('statsChart').getContext('2d');
             if (sChart) sChart.destroy();
 
@@ -426,7 +462,7 @@
                 data: {
                     labels: chartData.map(d => formatPrettyDate(d.date)),
                     datasets: [{
-                        label: 'Perf Globale (1RM estimé en kg)',
+                        label: 'Perf Globale (1RM en kg)',
                         data: chartData.map(d => d.score),
                         backgroundColor: gradientForce,
                         borderColor: '#3b82f6',
