@@ -51,6 +51,17 @@
         
         <section id="tab-workouts" class="tab-content active">
             <div id="workout-list" class="space-y-6">
+                
+                <div id="recovery-heatmap" class="mb-8 bg-zinc-900/50 p-5 rounded-3xl border border-zinc-800 shadow-lg">
+                    <h3 class="text-sm font-bold text-zinc-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        État de Récupération Musculaire
+                    </h3>
+                    <div id="recovery-bars" class="space-y-3">
+                        <div class="text-xs text-zinc-500 text-center">Analyse des données en cours...</div>
+                    </div>
+                </div>
+
                 <h2 class="text-2xl font-semibold text-zinc-300 mb-2">Programme de Base</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="base-workouts-container"></div>
                 
@@ -264,6 +275,7 @@
 
             populateStatsSelect();
             renderCalendar();
+            renderRecoveryHeatmap();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -280,6 +292,56 @@
             if(tabId === 'visbody') renderAllVisbodyCharts();
             if(tabId === 'progress') renderStatsChart();
             if(tabId === 'history') renderCalendar();
+        }
+
+        function renderRecoveryHeatmap() {
+            const recovery = { 'Pecs': 100, 'Dos': 100, 'Cuisses': 100, 'Épaules': 100, 'Bras': 100 };
+            const today = new Date(getLocalIsoDate());
+
+            globalWorkoutHistory.forEach(session => {
+                const sessionDate = new Date(session.date);
+                const diffTime = today - sessionDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 0 && diffDays <= 4) {
+                    const fatigueImpact = (4 - diffDays) * 20; 
+                    let musclesHit = [];
+                    if(session.workout_id === 'push') musclesHit = ['Pecs', 'Épaules', 'Bras'];
+                    else if(session.workout_id === 'pull') musclesHit = ['Dos', 'Bras'];
+                    else if(session.workout_id === 'legs') musclesHit = ['Cuisses'];
+                    else if(session.workout_id === 'bonus_fb') musclesHit = ['Pecs', 'Dos', 'Cuisses', 'Épaules', 'Bras'];
+                    else if(session.workout_id === 'bonus_arms') musclesHit = ['Bras', 'Épaules'];
+                    else if(session.workout_id === 'bonus_weak') musclesHit = ['Pecs', 'Dos'];
+
+                    musclesHit.forEach(m => {
+                        recovery[m] -= fatigueImpact;
+                        if(recovery[m] < 0) recovery[m] = 0;
+                    });
+                }
+            });
+
+            const container = document.getElementById('recovery-bars');
+            if(!container) return;
+            container.innerHTML = '';
+
+            for(const [muscle, score] of Object.entries(recovery)) {
+                let color = 'bg-emerald-500';
+                let text = 'Frais';
+                if (score < 40) { color = 'bg-red-500'; text = 'Fatigué'; }
+                else if (score < 70) { color = 'bg-orange-500'; text = 'Récupération'; }
+
+                container.innerHTML += `
+                    <div class="mb-2">
+                        <div class="flex justify-between text-xs font-bold text-zinc-400 mb-1">
+                            <span>${muscle}</span>
+                            <span class="${color.replace('bg-', 'text-')}">${text} (${score}%)</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                            <div class="h-full ${color} transition-all duration-1000" style="width: ${score}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         function renderWorkoutList() {
@@ -304,20 +366,33 @@
             el.classList.toggle('hidden');
         };
 
-        // 🆕 MISE À JOUR DYNAMIQUE DU RECORD QUAND ON CHANGE L'ÉQUIPEMENT
         window.updatePrevRecord = function(exoIndex, baseExo) {
             const variant = document.getElementById(`variant-${exoIndex}`).value;
             const fullExoName = baseExo + variant;
+            
             let prevText = "Pas de record";
+            let targetText = "Objectif : Trouver ta charge";
+            let targetClass = "text-zinc-400 border-zinc-700 bg-zinc-900";
             
             for(let i = globalWorkoutHistory.length - 1; i >= 0; i--) {
                 if(globalWorkoutHistory[i].data && globalWorkoutHistory[i].data[fullExoName]) {
                     const bestSet = globalWorkoutHistory[i].data[fullExoName][0];
                     prevText = `Dernier : ${bestSet.weight}kg x ${bestSet.reps}`;
+                    
+                    if(bestSet.reps >= 10) {
+                        targetText = `Objectif : ${bestSet.weight + 2.5}kg`;
+                        targetClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+                    } else if (bestSet.reps > 0) {
+                        targetText = `Objectif : ${bestSet.weight}kg x ${bestSet.reps + 1}`;
+                        targetClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
+                    }
                     break;
                 }
             }
             document.getElementById(`prev-${exoIndex}`).innerText = prevText;
+            const targetEl = document.getElementById(`target-${exoIndex}`);
+            targetEl.innerText = targetText;
+            targetEl.className = `text-[10px] px-2 py-1 rounded-lg font-bold border ${targetClass} max-w-[120px] text-right leading-tight mt-1`;
         };
 
         function openWorkout(id) {
@@ -332,16 +407,27 @@
 
             workout.exercises.forEach((exo, exoIndex) => {
                 let prevText = "Pas de record";
+                let targetText = "Objectif : Trouver ta charge";
+                let targetClass = "text-zinc-400 border-zinc-700 bg-zinc-900";
+
                 for(let i = globalWorkoutHistory.length - 1; i >= 0; i--) {
                     if(globalWorkoutHistory[i].data && globalWorkoutHistory[i].data[exo]) {
                         const bestSet = globalWorkoutHistory[i].data[exo][0];
                         prevText = `Dernier : ${bestSet.weight}kg x ${bestSet.reps}`;
+                        
+                        if(bestSet.reps >= 10) {
+                            targetText = `Objectif : ${bestSet.weight + 2.5}kg`;
+                            targetClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+                        } else if (bestSet.reps > 0) {
+                            targetText = `Objectif : ${bestSet.weight}kg x ${bestSet.reps + 1}`;
+                            targetClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
+                        }
                         break;
                     }
                 }
 
                 const imgUrl = exerciseImages[exo] || `https://placehold.co/600x300/18181b/3b82f6?text=${encodeURIComponent(exo)}`;
-                const safeExo = exo.replace(/'/g, "\\'"); // Sécurité pour les apostrophes
+                const safeExo = exo.replace(/'/g, "\\'"); 
 
                 let html = `
                     <div class="bg-zinc-900/80 p-5 rounded-3xl border border-zinc-800 shadow-md backdrop-blur-sm transition-colors hover:border-zinc-700">
@@ -356,9 +442,10 @@
                                     <option value=" (Poulie)">Variante : Poulie</option>
                                 </select>
                             </div>
-                            <div class="flex flex-col items-end gap-2 shrink-0">
-                                <span id="prev-${exoIndex}" class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded-lg font-bold text-right max-w-[110px] leading-tight">${prevText}</span>
-                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-[10px] text-zinc-500 hover:text-white transition-colors">📸 Photo</button>
+                            <div class="flex flex-col items-end shrink-0">
+                                <span id="prev-${exoIndex}" class="text-[10px] text-zinc-500 font-medium">${prevText}</span>
+                                <span id="target-${exoIndex}" class="text-[10px] px-2 py-1 rounded-lg font-bold border ${targetClass} max-w-[120px] text-right leading-tight mt-1">${targetText}</span>
+                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-[10px] text-zinc-600 hover:text-white transition-colors mt-2">Afficher Photo</button>
                             </div>
                         </div>
                         
@@ -406,7 +493,6 @@
                     }
                 }
                 if(sets.length > 0) {
-                    // 🆕 ON SAUVEGARDE LE NOM AVEC LA VARIANTE
                     const variant = document.getElementById(`variant-${exoIndex}`).value;
                     sessionData[exo + variant] = sets;
                 }
@@ -537,16 +623,12 @@
             });
         }
 
-        // 🆕 LISTE INTELLIGENTE POUR LES STATS (Prend en compte tes vraies variantes)
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
             let allExos = new Set();
             
-            // On ajoute les exos de base
             workoutsData.forEach(w => w.exercises.forEach(exo => allExos.add(exo)));
-            
-            // On ajoute tout ce qui est réellement dans ta base de données (ex: "Développé couché (Haltères)")
             globalWorkoutHistory.forEach(session => {
                 if(session.workout_id !== 'cardio' && session.data) {
                     Object.keys(session.data).forEach(key => allExos.add(key));
@@ -618,7 +700,6 @@
             });
         }
 
-        // --- GESTION DU CALENDRIER ---
         function changeMonth(offset) {
             currentMonth += offset;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
