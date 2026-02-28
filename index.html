@@ -302,6 +302,22 @@
             el.classList.toggle('hidden');
         };
 
+        // 🆕 MISE À JOUR DYNAMIQUE DU RECORD QUAND ON CHANGE L'ÉQUIPEMENT
+        window.updatePrevRecord = function(exoIndex, baseExo) {
+            const variant = document.getElementById(`variant-${exoIndex}`).value;
+            const fullExoName = baseExo + variant;
+            let prevText = "Pas de record";
+            
+            for(let i = globalWorkoutHistory.length - 1; i >= 0; i--) {
+                if(globalWorkoutHistory[i].data && globalWorkoutHistory[i].data[fullExoName]) {
+                    const bestSet = globalWorkoutHistory[i].data[fullExoName][0];
+                    prevText = `Dernier : ${bestSet.weight}kg x ${bestSet.reps}`;
+                    break;
+                }
+            }
+            document.getElementById(`prev-${exoIndex}`).innerText = prevText;
+        };
+
         function openWorkout(id) {
             currentWorkoutId = id;
             const workout = workoutsData.find(w => w.id === id);
@@ -323,15 +339,25 @@
                 }
 
                 const imgUrl = exerciseImages[exo] || `https://placehold.co/600x300/18181b/3b82f6?text=${encodeURIComponent(exo)}`;
+                const safeExo = exo.replace(/'/g, "\\'"); // Sécurité pour les apostrophes
 
                 let html = `
                     <div class="bg-zinc-900/80 p-5 rounded-3xl border border-zinc-800 shadow-md backdrop-blur-sm transition-colors hover:border-zinc-700">
-                        <div class="mb-4 flex justify-between items-start">
+                        <div class="mb-4 flex justify-between items-start gap-2">
                             <div>
                                 <h3 class="font-bold text-lg text-white">${exo}</h3>
-                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-xs text-blue-400 mt-1 flex items-center gap-1 hover:text-blue-300">Afficher/Cacher la photo</button>
+                                <select id="variant-${exoIndex}" onchange="updatePrevRecord(${exoIndex}, '${safeExo}')" class="mt-1 bg-zinc-950 text-xs text-zinc-400 rounded-lg px-2 py-1 outline-none border border-zinc-800 focus:border-blue-500 cursor-pointer">
+                                    <option value="">Matériel standard</option>
+                                    <option value=" (Haltères)">Variante : Haltères</option>
+                                    <option value=" (Machine)">Variante : Machine</option>
+                                    <option value=" (Barre)">Variante : Barre</option>
+                                    <option value=" (Poulie)">Variante : Poulie</option>
+                                </select>
                             </div>
-                            <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg font-bold">${prevText}</span>
+                            <div class="flex flex-col items-end gap-2 shrink-0">
+                                <span id="prev-${exoIndex}" class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded-lg font-bold text-right max-w-[110px] leading-tight">${prevText}</span>
+                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-[10px] text-zinc-500 hover:text-white transition-colors">📸 Photo</button>
+                            </div>
                         </div>
                         
                         <div id="img-${exoIndex}" class="hidden mb-4 rounded-xl overflow-hidden border border-zinc-700/50">
@@ -377,7 +403,11 @@
                         hasData = true;
                     }
                 }
-                if(sets.length > 0) sessionData[exo] = sets;
+                if(sets.length > 0) {
+                    // 🆕 ON SAUVEGARDE LE NOM AVEC LA VARIANTE
+                    const variant = document.getElementById(`variant-${exoIndex}`).value;
+                    sessionData[exo + variant] = sets;
+                }
             });
 
             if(!hasData) return alert("Tu n'as rien rempli !");
@@ -397,7 +427,6 @@
             }
         }
 
-        // --- GESTION DU CARDIO ---
         function openCardio() {
             document.getElementById('workout-list').classList.add('hidden');
             document.getElementById('active-cardio').classList.remove('hidden');
@@ -506,14 +535,27 @@
             });
         }
 
+        // 🆕 LISTE INTELLIGENTE POUR LES STATS (Prend en compte tes vraies variantes)
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
-            let allExos = [...new Set(workoutsData.flatMap(w => w.exercises))].sort(); 
+            let allExos = new Set();
+            
+            // On ajoute les exos de base
+            workoutsData.forEach(w => w.exercises.forEach(exo => allExos.add(exo)));
+            
+            // On ajoute tout ce qui est réellement dans ta base de données (ex: "Développé couché (Haltères)")
+            globalWorkoutHistory.forEach(session => {
+                if(session.workout_id !== 'cardio' && session.data) {
+                    Object.keys(session.data).forEach(key => allExos.add(key));
+                }
+            });
+
+            const sortedExos = [...allExos].sort();
             
             select.innerHTML = '';
-            allExos.forEach(exo => { select.innerHTML += `<option value="${exo}">${exo}</option>`; });
-            if(currentSelection && allExos.includes(currentSelection)) select.value = currentSelection;
+            sortedExos.forEach(exo => { select.innerHTML += `<option value="${exo}">${exo}</option>`; });
+            if(currentSelection && sortedExos.includes(currentSelection)) select.value = currentSelection;
         }
 
         function renderStatsChart() {
@@ -593,7 +635,7 @@
 
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            let startDay = firstDay === 0 ? 6 : firstDay - 1; // 0 correspond au Lundi dans ce calcul
+            let startDay = firstDay === 0 ? 6 : firstDay - 1;
 
             for (let i = 0; i < startDay; i++) { grid.innerHTML += `<div></div>`; }
 
