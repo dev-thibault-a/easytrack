@@ -20,7 +20,7 @@
 <body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950">
 
     <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-5xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
-        <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">⚡ EasyTrack</h1>
+        <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">EasyTrack</h1>
         <div id="sync-status" class="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-sm transition-colors">Connexion...</div>
     </header>
 
@@ -38,6 +38,10 @@
                 <img src="https://ih1.redbubble.net/image.1128082274.8014/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u1.jpg" alt="Visbody" class="w-6 h-6 md:w-8 md:h-8 object-contain opacity-90">
                 <span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Visbody</span>
             </button>
+            <button onclick="switchTab('history')" class="flex flex-col items-center gap-1 text-white opacity-40 transition-opacity duration-200 hover:scale-105 hover:opacity-100" id="nav-history">
+                <img src="https://i.makeagif.com/media/4-30-2024/tSAItpT.jpg" alt="Historique" class="w-6 h-6 md:w-8 md:h-8 object-contain opacity-90">
+                <span class="text-[10px] md:text-xs font-bold tracking-wide uppercase mt-1">Historique</span>
+            </button>
         </div>
     </nav>
 
@@ -47,18 +51,64 @@
             <div id="workout-list" class="space-y-6">
                 <h2 class="text-2xl font-semibold text-zinc-300 mb-2">Programme de Base</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="base-workouts-container"></div>
+                
                 <h2 class="text-2xl font-semibold text-zinc-300 mt-8 mb-2">Séances Bonus</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="bonus-workouts-container"></div>
+                
+                <h2 class="text-2xl font-semibold text-zinc-300 mt-8 mb-2">Conditionning</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="openCardio()" class="w-full h-full bg-gradient-to-br from-teal-600 to-teal-900 p-6 rounded-3xl flex flex-col justify-center items-start shadow-xl active:scale-95 transition-all hover:scale-[1.02] text-left border border-white/10 relative overflow-hidden group">
+                        <h3 class="text-2xl font-black text-white mb-2 relative z-10">Séance Cardio</h3>
+                        <p class="text-white/80 text-sm font-semibold relative z-10 bg-black/20 px-3 py-1 rounded-full">Tapis, Vélo, Rameur, Escalier...</p>
+                    </button>
+                </div>
             </div>
 
             <div id="active-workout" class="hidden space-y-6">
                 <div class="flex items-center justify-between mb-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-                    <button onclick="closeWorkout()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors">← Retour</button>
+                    <button onclick="closeWorkout()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors">Retour</button>
                     <span id="workout-title" class="font-bold text-xl text-white"></span>
                 </div>
                 <div id="exercises-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 <button onclick="saveWorkout()" class="w-full bg-white text-black font-extrabold text-xl py-5 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-95 transition-transform hover:bg-zinc-200 mt-8">
-                    ✅ Valider la séance
+                    Valider la séance
+                </button>
+            </div>
+
+            <div id="active-cardio" class="hidden space-y-6">
+                <div class="flex items-center justify-between mb-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+                    <button onclick="closeCardio()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors">Retour</button>
+                    <span class="font-bold text-xl text-white">Séance Cardio</span>
+                </div>
+                
+                <div class="bg-zinc-900/80 p-6 rounded-3xl border border-zinc-800 shadow-md backdrop-blur-sm">
+                    <label class="block text-sm font-medium text-zinc-400 mb-3">Machine utilisée :</label>
+                    <select id="cardio-type" class="w-full bg-zinc-950 border border-zinc-700 text-white rounded-xl p-4 mb-6 outline-none focus:ring-2 focus:ring-teal-500">
+                        <option value="Tapis de course">Tapis de course</option>
+                        <option value="Vélo">Vélo / RPM</option>
+                        <option value="Rameur">Rameur</option>
+                        <option value="Escalier">Escalier (Stairmaster)</option>
+                        <option value="Elliptique">Elliptique</option>
+                    </select>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-zinc-500 mb-1 block uppercase tracking-wider text-center">Temps (min)</label>
+                            <input type="number" id="cardio-time" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center text-white font-bold focus:border-teal-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-zinc-500 mb-1 block uppercase tracking-wider text-center">Dist. (km)</label>
+                            <input type="number" step="0.1" id="cardio-dist" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center text-white font-bold focus:border-teal-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-zinc-500 mb-1 block uppercase tracking-wider text-center">Calories</label>
+                            <input type="number" id="cardio-cal" class="w-full bg-zinc-950 p-4 rounded-xl border border-zinc-700 text-center text-white font-bold focus:border-teal-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="saveCardio()" class="w-full bg-teal-600 text-white font-extrabold text-xl py-5 rounded-2xl shadow-[0_0_20px_rgba(13,148,136,0.3)] active:scale-95 transition-transform hover:bg-teal-500 mt-8">
+                    Valider le cardio
                 </button>
             </div>
         </section>
@@ -72,6 +122,29 @@
             </div>
             <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
                 <canvas id="statsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="tab-history" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Historique des séances</h2>
+            <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl backdrop-blur-sm max-w-md mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="changeMonth(-1)" class="text-zinc-400 hover:text-white px-3 py-1 bg-zinc-800 rounded-lg">Précédent</button>
+                    <h3 id="calendar-month-year" class="text-lg font-bold text-white capitalize"></h3>
+                    <button onclick="changeMonth(1)" class="text-zinc-400 hover:text-white px-3 py-1 bg-zinc-800 rounded-lg">Suivant</button>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-zinc-500 mb-4">
+                    <div>LUN</div><div>MAR</div><div>MER</div><div>JEU</div><div>VEN</div><div>SAM</div><div>DIM</div>
+                </div>
+                
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center"></div>
+                
+                <div class="mt-8 text-center bg-zinc-950 py-3 rounded-xl border border-zinc-800">
+                    <span class="text-sm text-zinc-400">Total ce mois :</span>
+                    <span id="month-total" class="font-bold text-xl text-emerald-400 ml-2">0</span>
+                    <span class="text-sm text-zinc-400">séance(s)</span>
+                </div>
             </div>
         </section>
 
@@ -109,7 +182,6 @@
     </main>
 
     <script>
-        // Tes clés Supabase
         const SUPABASE_URL = 'https://vqtwxbsaieuajaddvbsj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdHd4YnNhaWV1YWphZGR2YnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjQ4MDQsImV4cCI6MjA4NzgwMDgwNH0.dGoigHDlSDxNELv07EL95-0N_Q6Q4aCrSVFC3jG2jyE';
 
@@ -117,7 +189,6 @@
         let globalWorkoutHistory = [];
         let globalVisbodyData = [];
 
-        // BASE DE DONNÉES DES PROGRAMMES
         const workoutsData = [
             { id: 'push', type: 'base', name: 'Séance Push', color: 'from-blue-600 to-blue-900', exercises: ['Développé couché', 'Chest press inclinée', 'Développé militaire', 'Triceps barre droite', 'Triceps barre V'] },
             { id: 'pull', type: 'base', name: 'Séance Pull', color: 'from-emerald-600 to-emerald-900', exercises: ['Tirage vertical', 'Tirage horizontal', 'Rowing', 'Biceps poulie', 'Curl marteau'] },
@@ -127,46 +198,33 @@
             { id: 'bonus_weak', type: 'bonus', name: 'Points Faibles (Dos/Pecs)', color: 'from-red-600 to-red-900', exercises: ['Pull-over', 'Écarté poulie vis-à-vis', 'Tirage bras tendus', 'Oiseau haltères', 'Shrugs'] }
         ];
 
-        // 📸 LE FAMEUX DICTIONNAIRE COMPLET DES PHOTOS (31 EXERCICES)
-        // Remplace simplement les liens commençant par "https://placehold.co/..." par tes propres liens Google Images !
         const exerciseImages = {
-            // --- SÉANCE PUSH ---
             'Développé couché': 'https://blog.myarsenalstrength.com/hs-fs/hubfs/Screenshot%202024-07-24%20at%209.54.41%20AM.png?width=460&height=388&name=Screenshot%202024-07-24%20at%209.54.41%20AM.png',
             'Chest press inclinée': 'https://i.pinimg.com/originals/df/fd/85/dffd856bea5056e1adbb683c6ea54613.gif',
             'Développé militaire': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif',
             'Triceps barre droite': 'https://fitliferegime.com/wp-content/uploads/2023/06/Triceps-Pushdown.gif',
             'Triceps barre V': 'https://fitnessprogramer.com/wp-content/uploads/2022/02/V-bar-Pushdown.gif',
-
-            // --- SÉANCE PULL ---
             'Tirage vertical': 'https://pump-app.s3.eu-west-2.amazonaws.com/exercise-assets/12041101-Cable-one-arm-lat-pulldown_back_small.jpg',
             'Tirage horizontal': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638351904146-GDGXXL9IHXKQKTXULLHF/Seated%2BCable%2BRow.jpeg',
             'Rowing': 'https://training.fit/wp-content/uploads/2020/02/rudern-langhantel.png',
             'Biceps poulie': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/One-Arm-Cable-Curl.gif',
             'Curl marteau': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif',
-
-            // --- SÉANCE LEGS ---
             'Squat pendulum': 'https://www.inspireusafoundation.org/file/2022/03/reverse-hack-squat.gif',
             'Soulevé de terre roumain': 'https://cdn.shopify.com/s/files/1/0645/8762/8770/files/RDL_Muscles_worked_480x480.jpg?v=1702889620',
             'Presse': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638426325877-TWFW03QZXN1H460YAJRD/Leg%2BPress%2BMachine.jpeg',
-            'Leg extension': 'https://www.gymchalo.com/cdn/shop/articles/leg-extension-anatomy.jpg', // Le vrai lien d'exemple
+            'Leg extension': 'https://www.gymchalo.com/cdn/shop/articles/leg-extension-anatomy.jpg',
             'Leg curl': 'https://fitnessprogramer.com/wp-content/uploads/2021/08/Seated-Leg-Curl.gif',
             'Mollets': 'https://training.fit/wp-content/uploads/2020/03/wadenheben-stehend-geraet-800x448.png',
-
-            // --- BONUS FULL BODY ---
             'Fentes bulgares': 'https://fitnessprogramer.com/wp-content/uploads/2021/05/Barbell-Bulgarian-Split-Squat.gif',
             'Développé incliné haltères': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif',
             'Tirage poitrine': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638411759184-YY7D7NHFS5GLKANOFH6R/Underhand%2BGrip%2BLat%2BPulldown%2BMachine.jpeg',
             'Élévations latérales': 'https://cdn.shopify.com/s/files/1/0754/7279/8002/files/Blog-dumbbells_3.webp?v=1739252606',
             'Curl pupitre': 'https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-Preacher-Curl.gif',
             'Abdos': 'https://training.fit/wp-content/uploads/2020/01/bauchpresse-maschine-geraet-800x448.png',
-
-            // --- BONUS BRAS & ÉPAULES ---
             'Curl barre': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638183279729-G59HWXQ3NO3CBQOUADD5/Narrow%2BGrip%2BStanding%2BEZ%2BBar%2BCurls.png?format=1000w',
             'Extension triceps poulie': 'https://fitliferegime.com/wp-content/uploads/2023/07/One-Arm-Overhead-Cable-Tricep-Extension.gif',
             'Face pull': 'https://pelank.com/wp-content/uploads/2025/01/Cross-Cable-Face-Pull.gif',
             'Dips': 'https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638261992305-VGLCGRH2LX2N3VKJSTOZ/Triceps%2BDips.jpeg',
-
-            // --- BONUS POINTS FAIBLES ---
             'Pull-over': 'https://lifefitindia.com/wp-content/uploads/2025/04/Dumbbell-Pullover-Muscles-Worked.jpg',
             'Écarté poulie vis-à-vis': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Cable-Crossover.gif',
             'Tirage bras tendus': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Rope-Straight-Arm-Pulldown.gif',
@@ -177,6 +235,9 @@
         let currentWorkoutId = null;
         let sChart = null;
         let vbCharts = {}; 
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
 
         function getLocalIsoDate() {
             const d = new Date();
@@ -196,10 +257,11 @@
             const { data: visbody } = await supabaseClient.from('visbody').select('*').order('date', { ascending: true });
             if (visbody) globalVisbodyData = visbody;
 
-            statusBadge.innerText = "Connecté ✅";
+            statusBadge.innerText = "Connecté";
             statusBadge.className = "text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-sm transition-colors";
 
             populateStatsSelect();
+            renderCalendar();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -215,6 +277,7 @@
 
             if(tabId === 'visbody') renderAllVisbodyCharts();
             if(tabId === 'progress') renderStatsChart();
+            if(tabId === 'history') renderCalendar();
         }
 
         function renderWorkoutList() {
@@ -225,9 +288,6 @@
             workoutsData.forEach(w => {
                 const card = `
                     <button onclick="openWorkout('${w.id}')" class="w-full h-full bg-gradient-to-br ${w.color} p-6 rounded-3xl flex flex-col justify-center items-start shadow-xl active:scale-95 transition-all hover:scale-[1.02] text-left border border-white/10 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity transform group-hover:scale-110">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        </div>
                         <h3 class="text-2xl font-black text-white mb-2 relative z-10">${w.name}</h3>
                         <p class="text-white/80 text-sm font-semibold relative z-10 bg-black/20 px-3 py-1 rounded-full">${w.exercises.length} exercices</p>
                     </button>
@@ -237,7 +297,6 @@
             });
         }
 
-        // 📸 FONCTION POUR AFFICHER/CACHER L'IMAGE
         window.togglePhoto = function(id) {
             const el = document.getElementById(id);
             el.classList.toggle('hidden');
@@ -256,14 +315,13 @@
             workout.exercises.forEach((exo, exoIndex) => {
                 let prevText = "Pas de record";
                 for(let i = globalWorkoutHistory.length - 1; i >= 0; i--) {
-                    if(globalWorkoutHistory[i].data[exo]) {
+                    if(globalWorkoutHistory[i].data && globalWorkoutHistory[i].data[exo]) {
                         const bestSet = globalWorkoutHistory[i].data[exo][0];
                         prevText = `Dernier : ${bestSet.weight}kg x ${bestSet.reps}`;
                         break;
                     }
                 }
 
-                // 📸 Récupération de l'image (soit dans le dico, soit une image par défaut)
                 const imgUrl = exerciseImages[exo] || `https://placehold.co/600x300/18181b/3b82f6?text=${encodeURIComponent(exo)}`;
 
                 let html = `
@@ -271,7 +329,7 @@
                         <div class="mb-4 flex justify-between items-start">
                             <div>
                                 <h3 class="font-bold text-lg text-white">${exo}</h3>
-                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-xs text-blue-400 mt-1 flex items-center gap-1 hover:text-blue-300">📸 Afficher/Cacher la photo</button>
+                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-xs text-blue-400 mt-1 flex items-center gap-1 hover:text-blue-300">Afficher/Cacher la photo</button>
                             </div>
                             <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg font-bold">${prevText}</span>
                         </div>
@@ -333,9 +391,44 @@
 
             if(error) alert("Erreur : " + error.message);
             else {
-                alert("💪 Séance enregistrée avec succès !");
+                alert("Séance enregistrée avec succès !");
                 await loadDataFromCloud();
                 closeWorkout();
+            }
+        }
+
+        // --- GESTION DU CARDIO ---
+        function openCardio() {
+            document.getElementById('workout-list').classList.add('hidden');
+            document.getElementById('active-cardio').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeCardio() {
+            document.getElementById('active-cardio').classList.add('hidden');
+            document.getElementById('workout-list').classList.remove('hidden');
+        }
+
+        async function saveCardio() {
+            const type = document.getElementById('cardio-type').value;
+            const time = document.getElementById('cardio-time').value;
+            const dist = document.getElementById('cardio-dist').value;
+            const cal = document.getElementById('cardio-cal').value;
+
+            if(!time && !dist && !cal) return alert("Renseigne au moins une donnée !");
+
+            const sessionData = { [type]: [{ weight: parseFloat(dist)||0, reps: parseInt(time)||0, cal: parseInt(cal)||0 }] };
+            document.getElementById('sync-status').innerText = "Envoi...";
+            
+            const { error } = await supabaseClient.from('workouts').insert([
+                { date: getLocalIsoDate(), workout_id: 'cardio', data: sessionData }
+            ]);
+
+            if(error) alert("Erreur : " + error.message);
+            else {
+                alert("Cardio enregistré !");
+                await loadDataFromCloud();
+                closeCardio();
             }
         }
 
@@ -413,7 +506,6 @@
             });
         }
 
-        // --- STATS FORCE (Calcul 1RM + %) ---
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
@@ -429,8 +521,7 @@
             const chartData = [];
             
             globalWorkoutHistory.forEach(session => {
-                if(session.data[selectedExo]) {
-                    // Calcul 1RM Estimé (Formule Epley)
+                if(session.data && session.data[selectedExo]) {
                     const best1RM = Math.max(...session.data[selectedExo].map(set => {
                         return Math.round(set.weight * (1 + set.reps / 30));
                     }));
@@ -438,7 +529,6 @@
                 }
             });
 
-            // Pourcentage de progression
             const progDiv = document.getElementById('stats-progression');
             if(chartData.length >= 2) {
                 const firstPerf = chartData[0].score;
@@ -447,7 +537,7 @@
                     const diff = (((lastPerf - firstPerf) / firstPerf) * 100).toFixed(1);
                     const sign = diff >= 0 ? '+' : '';
                     const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-red-400';
-                    progDiv.innerHTML = `Perf globale : <span class="${colorClass} font-bold text-lg">${sign}${diff}%</span> depuis le début 🚀`;
+                    progDiv.innerHTML = `Perf globale : <span class="${colorClass} font-bold text-lg">${sign}${diff}%</span> depuis le début`;
                 }
             } else {
                 progDiv.innerHTML = 'Fais au moins 2 séances pour voir ton évolution !';
@@ -482,6 +572,41 @@
                     }
                 }
             });
+        }
+
+        // --- GESTION DU CALENDRIER ---
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            else if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            const titleEl = document.getElementById('calendar-month-year');
+            if(!titleEl) return;
+            titleEl.innerText = monthNames[currentMonth] + " " + currentYear;
+
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            let startDay = firstDay === 0 ? 6 : firstDay - 1; // 0 correspond au Lundi dans ce calcul
+
+            for (let i = 0; i < startDay; i++) { grid.innerHTML += `<div></div>`; }
+
+            let totalSessions = 0;
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+                const hasWorkout = globalWorkoutHistory.some(w => w.date === dateStr);
+                if(hasWorkout) totalSessions++;
+
+                const bgClass = hasWorkout ? 'bg-emerald-500 text-black font-bold border-emerald-400' : 'bg-zinc-900 text-zinc-400 border-zinc-800';
+                grid.innerHTML += `<div class="aspect-square flex items-center justify-center rounded-xl border ${bgClass} text-sm">${i}</div>`;
+            }
+            document.getElementById('month-total').innerText = totalSessions;
         }
     </script>
 </body>
