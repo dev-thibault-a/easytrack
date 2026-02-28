@@ -132,6 +132,8 @@
                 <label class="block text-sm font-medium text-zinc-400 mb-2">Sélectionne un exercice :</label>
                 <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-950 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition-all cursor-pointer"></select>
                 <div id="stats-progression" class="mt-4 text-sm text-zinc-300 text-center font-medium bg-zinc-950 py-2 rounded-lg border border-zinc-800">Sélectionne un exo pour voir ton évolution.</div>
+                
+                <div id="stats-grade" class="mt-4 text-center hidden"></div>
             </div>
             <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
                 <canvas id="statsChart"></canvas>
@@ -667,6 +669,50 @@
                 }
             } else {
                 progDiv.innerHTML = 'Fais au moins 2 séances pour voir ton évolution !';
+            }
+
+            // 🆕 NOUVEAU : CALCUL DU GRADE / RATIO POIDS DE CORPS
+            const gradeDiv = document.getElementById('stats-grade');
+            gradeDiv.classList.add('hidden');
+            
+            if(chartData.length > 0) {
+                const best1RM = chartData[chartData.length - 1].score;
+                let latestWeight = 0;
+                
+                // Récupération du dernier poids renseigné dans Visbody
+                if (globalVisbodyData.length > 0) {
+                    const latestVisbody = globalVisbodyData[globalVisbodyData.length - 1];
+                    if (latestVisbody.weight) latestWeight = latestVisbody.weight;
+                }
+
+                if (latestWeight > 0) {
+                    const ratio = (best1RM / latestWeight).toFixed(2);
+                    let gradeName = "";
+                    let gradeColor = "";
+
+                    // Logique pour adapter les grades (Le bas du corps est plus fort que le haut du corps)
+                    const exoLower = selectedExo.toLowerCase();
+                    const isLowerBody = exoLower.includes('squat') || exoLower.includes('terre') || exoLower.includes('presse') || exoLower.includes('legs') || exoLower.includes('fentes');
+
+                    const tNovice = isLowerBody ? 1.0 : 0.7;
+                    const tInter = isLowerBody ? 1.4 : 1.0;
+                    const tAvance = isLowerBody ? 1.8 : 1.3;
+                    const tElite = isLowerBody ? 2.2 : 1.6;
+
+                    if (ratio < tNovice) { gradeName = "DÉBUTANT"; gradeColor = "text-zinc-400 border-zinc-700 bg-zinc-900"; }
+                    else if (ratio < tInter) { gradeName = "NOVICE"; gradeColor = "text-blue-400 border-blue-500/30 bg-blue-500/10"; }
+                    else if (ratio < tAvance) { gradeName = "INTERMÉDIAIRE"; gradeColor = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"; }
+                    else if (ratio < tElite) { gradeName = "AVANCÉ"; gradeColor = "text-purple-400 border-purple-500/30 bg-purple-500/10"; }
+                    else { gradeName = "ELITE"; gradeColor = "text-yellow-400 border-yellow-500/50 bg-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"; }
+
+                    gradeDiv.innerHTML = `
+                        <div class="inline-block px-4 py-2 mt-2 rounded-xl border ${gradeColor}">
+                            <span class="block text-[10px] uppercase tracking-wider opacity-80 mb-0.5">Niveau de force estimé</span>
+                            <span class="font-black text-lg">${gradeName} <span class="text-sm opacity-70 ml-1">(${ratio}x pdc)</span></span>
+                        </div>
+                    `;
+                    gradeDiv.classList.remove('hidden');
+                }
             }
 
             const ctx = document.getElementById('statsChart').getContext('2d');
