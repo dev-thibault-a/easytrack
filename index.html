@@ -61,10 +61,11 @@
         </section>
 
         <section id="tab-progress" class="tab-content">
-            <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Progression de Force</h2>
-            <div class="mb-6 max-w-md">
+            <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Progression Globale (1RM)</h2>
+            <div class="mb-6 max-w-md bg-zinc-900/50 p-5 rounded-2xl border border-zinc-800 shadow-lg">
                 <label class="block text-sm font-medium text-zinc-400 mb-2">Sélectionne un exercice :</label>
-                <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-900 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-4 outline-none transition-all cursor-pointer"></select>
+                <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-950 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition-all cursor-pointer"></select>
+                <div id="stats-progression" class="mt-4 text-sm text-zinc-300 text-center font-medium bg-zinc-950 py-2 rounded-lg border border-zinc-800">Sélectionne un exo pour voir ton évolution.</div>
             </div>
             <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
                 <canvas id="statsChart"></canvas>
@@ -72,7 +73,6 @@
         </section>
 
         <section id="tab-visbody" class="tab-content">
-            
             <div class="max-w-2xl mx-auto mb-10">
                 <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Bilan Visbody Pro</h2>
                 <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 shadow-xl space-y-6 backdrop-blur-sm">
@@ -92,40 +92,15 @@
 
             <h2 class="text-2xl font-semibold mb-6 text-zinc-300">Tableau de bord de l'évolution</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-white mb-2 uppercase tracking-wider text-center">Poids total (kg)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-weight"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-purple-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider text-center">Score Santé</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-score"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Masse Grasse (%)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-fat"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-orange-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-orange-400 mb-2 uppercase tracking-wider text-center">Muscle (kg)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-muscle"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-blue-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-blue-400 mb-2 uppercase tracking-wider text-center">Eau Corporelle (kg)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-water"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Os / Minéraux (kg)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-bone"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-red-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider text-center">Graisse Viscérale</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-visceral"></canvas></div>
-                </div>
-                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-green-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col">
-                    <h3 class="text-xs font-bold text-green-400 mb-2 uppercase tracking-wider text-center">Métabolisme (kcal)</h3>
-                    <div class="flex-grow relative"><canvas id="vbChart-bmr"></canvas></div>
-                </div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-white mb-2 uppercase tracking-wider text-center">Poids total (kg)</h3><div class="flex-grow relative"><canvas id="vbChart-weight"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-purple-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider text-center">Score Santé</h3><div class="flex-grow relative"><canvas id="vbChart-score"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Masse Grasse (%)</h3><div class="flex-grow relative"><canvas id="vbChart-fat"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-orange-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-orange-400 mb-2 uppercase tracking-wider text-center">Muscle (kg)</h3><div class="flex-grow relative"><canvas id="vbChart-muscle"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-blue-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-blue-400 mb-2 uppercase tracking-wider text-center">Eau Corporelle (kg)</h3><div class="flex-grow relative"><canvas id="vbChart-water"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wider text-center">Os / Minéraux (kg)</h3><div class="flex-grow relative"><canvas id="vbChart-bone"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-red-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider text-center">Graisse Viscérale</h3><div class="flex-grow relative"><canvas id="vbChart-visceral"></canvas></div></div>
+                <div class="bg-zinc-900/50 p-4 rounded-2xl border border-green-900/30 shadow-lg backdrop-blur-sm h-48 flex flex-col"><h3 class="text-xs font-bold text-green-400 mb-2 uppercase tracking-wider text-center">Métabolisme (kcal)</h3><div class="flex-grow relative"><canvas id="vbChart-bmr"></canvas></div></div>
             </div>
-
         </section>
 
     </main>
@@ -139,6 +114,7 @@
         let globalWorkoutHistory = [];
         let globalVisbodyData = [];
 
+        // BASE DE DONNÉES DES PROGRAMMES
         const workoutsData = [
             { id: 'push', type: 'base', name: 'Séance Push', color: 'from-blue-600 to-blue-900', exercises: ['Développé couché', 'Chest press inclinée', 'Développé militaire', 'Triceps barre droite', 'Triceps barre V'] },
             { id: 'pull', type: 'base', name: 'Séance Pull', color: 'from-emerald-600 to-emerald-900', exercises: ['Tirage vertical', 'Tirage horizontal', 'Rowing', 'Biceps poulie', 'Curl marteau'] },
@@ -148,9 +124,18 @@
             { id: 'bonus_weak', type: 'bonus', name: 'Points Faibles (Dos/Pecs)', color: 'from-red-600 to-red-900', exercises: ['Pull-over', 'Écarté poulie vis-à-vis', 'Tirage bras tendus', 'Oiseau haltères', 'Shrugs'] }
         ];
 
+        // 📸 DICTIONNAIRE DES PHOTOS DES EXERCICES
+        // Remplace les liens "images.unsplash.com" par tes propres liens Google Images si tu veux !
+        const exerciseImages = {
+            'Développé couché': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=600&q=80',
+            'Squat pendulum': 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?auto=format&fit=crop&w=600&q=80',
+            'Tirage vertical': 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=600&q=80'
+            // Tu peux rajouter tes autres exos ici au même format !
+        };
+
         let currentWorkoutId = null;
         let sChart = null;
-        let vbCharts = {}; // Objet pour stocker les 8 graphiques Visbody
+        let vbCharts = {}; 
 
         function getLocalIsoDate() {
             const d = new Date();
@@ -211,6 +196,12 @@
             });
         }
 
+        // Fonction pour afficher/cacher la photo
+        window.togglePhoto = function(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        };
+
         function openWorkout(id) {
             currentWorkoutId = id;
             const workout = workoutsData.find(w => w.id === id);
@@ -231,12 +222,23 @@
                     }
                 }
 
+                // Récupération de l'image (soit dans le dico, soit une image générique avec le nom de l'exo)
+                const imgUrl = exerciseImages[exo] || `https://placehold.co/600x300/18181b/3b82f6?text=${encodeURIComponent(exo)}`;
+
                 let html = `
                     <div class="bg-zinc-900/80 p-5 rounded-3xl border border-zinc-800 shadow-md backdrop-blur-sm transition-colors hover:border-zinc-700">
-                        <div class="mb-5 flex justify-between items-center">
-                            <h3 class="font-bold text-lg text-white">${exo}</h3>
+                        <div class="mb-4 flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-white">${exo}</h3>
+                                <button onclick="togglePhoto('img-${exoIndex}')" class="text-xs text-blue-400 mt-1 flex items-center gap-1 hover:text-blue-300">📸 Afficher/Cacher la photo</button>
+                            </div>
                             <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg font-bold">${prevText}</span>
                         </div>
+                        
+                        <div id="img-${exoIndex}" class="hidden mb-4 rounded-xl overflow-hidden border border-zinc-700/50">
+                            <img src="${imgUrl}" alt="${exo}" class="w-full h-40 object-cover opacity-90">
+                        </div>
+
                         <div class="space-y-3">
                 `;
                 
@@ -313,9 +315,7 @@
             document.getElementById('sync-status').innerText = "Envoi...";
             
             const insertData = { date: getLocalIsoDate() };
-            for (const key in payload) {
-                insertData[key] = parseFloat(payload[key]) || null;
-            }
+            for (const key in payload) { insertData[key] = parseFloat(payload[key]) || null; }
 
             const { error } = await supabaseClient.from('visbody').insert([insertData]);
 
@@ -341,7 +341,9 @@
 
         function renderAllVisbodyCharts() {
             visbodyConfig.forEach(config => {
-                const ctx = document.getElementById(`vbChart-${config.id}`).getContext('2d');
+                const canvas = document.getElementById(`vbChart-${config.id}`);
+                if(!canvas) return; // Sécurité si on n'est pas sur le bon onglet
+                const ctx = canvas.getContext('2d');
                 if (vbCharts[config.id]) vbCharts[config.id].destroy();
 
                 let gradient = ctx.createLinearGradient(0, 0, 0, 150);
@@ -354,8 +356,7 @@
                         labels: globalVisbodyData.map(d => formatPrettyDate(d.date)),
                         datasets: [{
                             data: globalVisbodyData.map(d => d[config.id]),
-                            borderColor: config.color,
-                            backgroundColor: gradient,
+                            borderColor: config.color, backgroundColor: gradient,
                             fill: true, tension: 0.4, borderWidth: 2,
                             pointBackgroundColor: '#000', pointBorderColor: config.color, pointRadius: 3
                         }]
@@ -372,7 +373,7 @@
             });
         }
 
-        // --- STATS FORCE ---
+        // --- STATS FORCE (Mise à jour Perf Globale) ---
         function populateStatsSelect() {
             const select = document.getElementById('stats-exo-select');
             const currentSelection = select.value;
@@ -386,13 +387,33 @@
         function renderStatsChart() {
             const selectedExo = document.getElementById('stats-exo-select').value;
             const chartData = [];
+            
             globalWorkoutHistory.forEach(session => {
                 if(session.data[selectedExo]) {
-                    const maxWeight = Math.max(...session.data[selectedExo].map(set => set.weight));
-                    chartData.push({ date: session.date, weight: maxWeight });
+                    // Calcul de la Perf Globale (1RM estimé) avec la formule d'Epley
+                    const best1RM = Math.max(...session.data[selectedExo].map(set => {
+                        return Math.round(set.weight * (1 + set.reps / 30));
+                    }));
+                    chartData.push({ date: session.date, score: best1RM });
                 }
             });
 
+            // GESTION DU TEXTE DE PROGRESSION (+X%)
+            const progDiv = document.getElementById('stats-progression');
+            if(chartData.length >= 2) {
+                const firstPerf = chartData[0].score;
+                const lastPerf = chartData[chartData.length - 1].score;
+                if(firstPerf > 0) {
+                    const diff = (((lastPerf - firstPerf) / firstPerf) * 100).toFixed(1);
+                    const sign = diff >= 0 ? '+' : '';
+                    const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-red-400';
+                    progDiv.innerHTML = `Perf globale : <span class="${colorClass} font-bold text-lg">${sign}${diff}%</span> depuis la première séance 🚀`;
+                }
+            } else {
+                progDiv.innerHTML = 'Fais au moins 2 séances pour voir ton évolution !';
+            }
+
+            // DESSIN DU GRAPHIQUE
             const ctx = document.getElementById('statsChart').getContext('2d');
             if (sChart) sChart.destroy();
 
@@ -405,8 +426,8 @@
                 data: {
                     labels: chartData.map(d => formatPrettyDate(d.date)),
                     datasets: [{
-                        label: 'Charge Max (kg)',
-                        data: chartData.map(d => d.weight),
+                        label: 'Perf Globale (1RM estimé en kg)',
+                        data: chartData.map(d => d.score),
                         backgroundColor: gradientForce,
                         borderColor: '#3b82f6',
                         borderWidth: 1, borderRadius: 6,
