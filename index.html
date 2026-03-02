@@ -19,14 +19,14 @@
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950">
+<body class="pb-24 md:pb-0 md:pt-24 bg-zinc-950 relative">
 
-    <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-50 flex justify-between items-center max-w-5xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
+    <header class="pt-12 pb-6 px-6 border-b border-zinc-800 bg-zinc-950/80 sticky top-0 backdrop-blur-md z-40 flex justify-between items-center max-w-5xl mx-auto md:fixed md:w-full md:max-w-none md:px-12 md:pt-6">
         <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">EasyTrack</h1>
         <div id="sync-status" class="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-sm transition-colors">Connexion...</div>
     </header>
 
-    <nav class="fixed bottom-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800 pb-safe z-40 md:top-24 md:bottom-auto md:w-auto md:left-1/2 md:-translate-x-1/2 md:border md:border-zinc-800 md:rounded-2xl md:px-6">
+    <nav class="fixed bottom-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800 pb-safe z-30 md:top-24 md:bottom-auto md:w-auto md:left-1/2 md:-translate-x-1/2 md:border md:border-zinc-800 md:rounded-2xl md:px-6">
         <div class="flex justify-around p-3 md:pb-3 md:gap-8">
             <button onclick="switchTab('workouts')" class="flex flex-col items-center gap-1 text-white transition-opacity duration-200 hover:scale-105" id="nav-workouts">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo1CIG2qwPcjqJLK4kfR1liQBfTvHq1jnSrA&s" alt="Séances" class="w-6 h-6 md:w-8 md:h-8 object-contain opacity-90">
@@ -47,7 +47,7 @@
         </div>
     </nav>
 
-    <main class="p-6 max-w-5xl mx-auto">
+    <main class="p-6 max-w-5xl mx-auto relative">
         
         <section id="tab-workouts" class="tab-content active">
             <div id="workout-list" class="space-y-6">
@@ -79,8 +79,12 @@
 
             <div id="active-workout" class="hidden space-y-6">
                 <div class="flex items-center justify-between mb-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-                    <button onclick="closeWorkout()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors">Retour</button>
-                    <span id="workout-title" class="font-bold text-xl text-white"></span>
+                    <button onclick="closeWorkout()" class="text-zinc-400 flex items-center gap-2 font-medium hover:text-white transition-colors shrink-0">Retour</button>
+                    <span id="workout-title" class="font-bold text-xl text-white text-center flex-1 mx-2 truncate"></span>
+                    <button onclick="toggleTimer()" class="bg-zinc-800 text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-zinc-700 transition-colors shrink-0">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Chrono
+                    </button>
                 </div>
                 <div id="exercises-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 <button onclick="saveWorkout()" class="w-full bg-white text-black font-extrabold text-xl py-5 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-95 transition-transform hover:bg-zinc-200 mt-8">
@@ -132,7 +136,6 @@
                 <label class="block text-sm font-medium text-zinc-400 mb-2">Sélectionne un exercice :</label>
                 <select id="stats-exo-select" onchange="renderStatsChart()" class="w-full bg-zinc-950 border border-zinc-700 text-white text-base rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition-all cursor-pointer"></select>
                 <div id="stats-progression" class="mt-4 text-sm text-zinc-300 text-center font-medium bg-zinc-950 py-2 rounded-lg border border-zinc-800">Sélectionne un exo pour voir ton évolution.</div>
-                
                 <div id="stats-grade" class="mt-4 text-center hidden"></div>
             </div>
             <div class="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800 h-[400px] shadow-2xl backdrop-blur-sm">
@@ -196,6 +199,28 @@
 
     </main>
 
+    <div id="floating-timer" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-zinc-900/95 backdrop-blur-xl border border-zinc-700 p-4 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.8)] z-50 flex flex-col items-center gap-3">
+        <div class="flex justify-between w-full items-center">
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Temps de repos
+            </span>
+            <button onclick="toggleTimer()" class="text-zinc-500 hover:text-white p-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex items-center justify-between w-full">
+            <div id="timer-display" class="text-4xl font-black text-white font-mono tracking-tight">00:00</div>
+            <button onclick="addTime(0)" class="text-red-400 hover:text-red-300 text-xs font-bold bg-red-500/10 px-3 py-2 rounded-lg transition-colors">Stop</button>
+        </div>
+        <div class="grid grid-cols-4 gap-2 w-full mt-1">
+            <button onclick="addTime(60)" class="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-2 rounded-xl transition-colors">1m</button>
+            <button onclick="addTime(90)" class="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-2 rounded-xl transition-colors">1m30</button>
+            <button onclick="addTime(120)" class="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-2 rounded-xl transition-colors">2m</button>
+            <button onclick="addTime(180)" class="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-2 rounded-xl transition-colors">3m</button>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://vqtwxbsaieuajaddvbsj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdHd4YnNhaWV1YWphZGR2YnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjQ4MDQsImV4cCI6MjA4NzgwMDgwNH0.dGoigHDlSDxNELv07EL95-0N_Q6Q4aCrSVFC3jG2jyE';
@@ -254,6 +279,10 @@
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
 
+        // 🆕 VARIABLES CHRONOMÈTRE
+        let timerInterval = null;
+        let timeRemaining = 0;
+
         function getLocalIsoDate() {
             const d = new Date();
             return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -294,6 +323,47 @@
             if(tabId === 'visbody') renderAllVisbodyCharts();
             if(tabId === 'progress') renderStatsChart();
             if(tabId === 'history') renderCalendar();
+        }
+
+        // --- GESTION DU CHRONOMÈTRE ---
+        function toggleTimer() {
+            const timerEl = document.getElementById('floating-timer');
+            timerEl.classList.toggle('hidden');
+        }
+
+        function addTime(seconds) {
+            timeRemaining = seconds;
+            updateTimerDisplay();
+            clearInterval(timerInterval);
+            
+            if (seconds > 0) {
+                timerInterval = setInterval(() => {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        if ("vibrate" in navigator) navigator.vibrate([300, 100, 300, 100, 300]);
+                        // Le chrono se cache tout seul au bout de 3 secondes quand c'est fini
+                        setTimeout(() => {
+                            if (timeRemaining <= 0) document.getElementById('floating-timer').classList.add('hidden');
+                        }, 3000);
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            if (!display) return;
+            const m = Math.floor(Math.abs(timeRemaining) / 60).toString().padStart(2, '0');
+            const s = (Math.abs(timeRemaining) % 60).toString().padStart(2, '0');
+            display.innerText = `${m}:${s}`;
+            
+            if (timeRemaining <= 0) {
+                display.classList.replace('text-white', 'text-red-500');
+            } else {
+                display.classList.replace('text-red-500', 'text-white');
+            }
         }
 
         function renderRecoveryHeatmap() {
@@ -476,6 +546,9 @@
         function closeWorkout() {
             document.getElementById('active-workout').classList.add('hidden');
             document.getElementById('workout-list').classList.remove('hidden');
+            // Cache le chrono en fermant la séance
+            document.getElementById('floating-timer').classList.add('hidden');
+            clearInterval(timerInterval);
             currentWorkoutId = null;
         }
 
@@ -671,7 +744,6 @@
                 progDiv.innerHTML = 'Fais au moins 2 séances pour voir ton évolution !';
             }
 
-            // 🆕 NOUVEAU : CALCUL DU GRADE / RATIO POIDS DE CORPS
             const gradeDiv = document.getElementById('stats-grade');
             gradeDiv.classList.add('hidden');
             
@@ -679,7 +751,6 @@
                 const best1RM = chartData[chartData.length - 1].score;
                 let latestWeight = 0;
                 
-                // Récupération du dernier poids renseigné dans Visbody
                 if (globalVisbodyData.length > 0) {
                     const latestVisbody = globalVisbodyData[globalVisbodyData.length - 1];
                     if (latestVisbody.weight) latestWeight = latestVisbody.weight;
@@ -690,7 +761,6 @@
                     let gradeName = "";
                     let gradeColor = "";
 
-                    // Logique pour adapter les grades (Le bas du corps est plus fort que le haut du corps)
                     const exoLower = selectedExo.toLowerCase();
                     const isLowerBody = exoLower.includes('squat') || exoLower.includes('terre') || exoLower.includes('presse') || exoLower.includes('legs') || exoLower.includes('fentes');
 
